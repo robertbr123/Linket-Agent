@@ -1,22 +1,27 @@
 #!/bin/bash
 # ============================================================================
-# Hermes Agent Installer
+# Linket Agent Installer
 # ============================================================================
 # Installation script for Linux, macOS, and Android/Termux.
 # Uses uv for desktop/server installs and Python's stdlib venv + pip on Termux.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+#   curl -fsSL https://linket.com.br/install.sh | bash
 #
 # Or with options:
-#   curl -fsSL ... | bash -s -- --no-venv --skip-setup
+#   curl -fsSL https://linket.com.br/install.sh | bash -s -- --no-venv --skip-setup
 #
+# (linket.com.br/install.sh is a thin redirect to
+#  raw.githubusercontent.com/robertbr123/Linket-Agent/main/scripts/install.sh —
+#  see infra/redirect-worker.js in the repo for the Cloudflare Worker source.)
+#
+# Linket Agent is a fork of Hermes Agent (Nous Research). MIT-licensed.
 # ============================================================================
 
 set -e
 
 # Guard against environment leakage when the installer is launched from another
-# Python-driven tool session (e.g. Hermes terminal tool). A pre-set PYTHONPATH
+# Python-driven tool session (e.g. Linket terminal tool). A pre-set PYTHONPATH
 # can force pip/entrypoints to import a different checkout than the one being
 # installed, which makes fresh installs appear broken or stale.
 if [ -n "${PYTHONPATH:-}" ]; then
@@ -43,8 +48,8 @@ NC='\033[0m' # No Color
 BOLD='\033[1m'
 
 # Configuration
-REPO_URL_SSH="git@github.com:NousResearch/hermes-agent.git"
-REPO_URL_HTTPS="https://github.com/NousResearch/hermes-agent.git"
+REPO_URL_SSH="git@github.com:robertbr123/Linket-Agent.git"
+REPO_URL_HTTPS="https://github.com/robertbr123/Linket-Agent.git"
 HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
 # INSTALL_DIR is resolved AFTER arg parsing and OS detection so we can pick an
 # FHS-style layout for root installs.  Track whether the user gave us an
@@ -104,7 +109,7 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         -h|--help)
-            echo "Hermes Agent Installer"
+            echo "Linket Agent Installer"
             echo ""
             echo "Usage: install.sh [OPTIONS]"
             echo ""
@@ -143,7 +148,7 @@ print_banner() {
     echo ""
     echo -e "${MAGENTA}${BOLD}"
     echo "┌─────────────────────────────────────────────────────────┐"
-    echo "│             ⚕ Hermes Agent Installer                    │"
+    echo "│             ⛓ Linket Agent Installer                    │"
     echo "├─────────────────────────────────────────────────────────┤"
     echo "│  An open source AI agent by Nous Research.              │"
     echo "└─────────────────────────────────────────────────────────┘"
@@ -314,7 +319,7 @@ detect_os() {
             OS="windows"
             DISTRO="windows"
             log_error "Windows detected. Please use the PowerShell installer:"
-            log_info "  irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex"
+            log_info "  irm https://linket.com.br/install.ps1 | iex"
             exit 1
             ;;
         *)

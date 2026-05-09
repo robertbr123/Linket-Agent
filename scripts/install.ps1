@@ -1,15 +1,19 @@
 # ============================================================================
-# Hermes Agent Installer for Windows
+# Linket Agent Installer for Windows
 # ============================================================================
 # Installation script for Windows (PowerShell).
 # Uses uv for fast Python provisioning and package management.
 #
 # Usage:
-#   irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex
+#   irm https://linket.com.br/install.ps1 | iex
 #
 # Or download and run with options:
 #   .\install.ps1 -NoVenv -SkipSetup
 #
+# (linket.com.br/install.ps1 redirects to
+#  raw.githubusercontent.com/robertbr123/Linket-Agent/main/scripts/install.ps1)
+#
+# Linket Agent is a fork of Hermes Agent (Nous Research). MIT-licensed.
 # ============================================================================
 
 param(
@@ -26,8 +30,8 @@ $ErrorActionPreference = "Stop"
 # Configuration
 # ============================================================================
 
-$RepoUrlSsh = "git@github.com:NousResearch/hermes-agent.git"
-$RepoUrlHttps = "https://github.com/NousResearch/hermes-agent.git"
+$RepoUrlSsh = "git@github.com:robertbr123/Linket-Agent.git"
+$RepoUrlHttps = "https://github.com/robertbr123/Linket-Agent.git"
 $PythonVersion = "3.11"
 $NodeVersion = "22"
 
@@ -38,7 +42,7 @@ $NodeVersion = "22"
 function Write-Banner {
     Write-Host ""
     Write-Host "┌─────────────────────────────────────────────────────────┐" -ForegroundColor Magenta
-    Write-Host "│             ⚕ Hermes Agent Installer                    │" -ForegroundColor Magenta
+    Write-Host "│             ⛓ Linket Agent Installer                    │" -ForegroundColor Magenta
     Write-Host "├─────────────────────────────────────────────────────────┤" -ForegroundColor Magenta
     Write-Host "│  An open source AI agent by Nous Research.              │" -ForegroundColor Magenta
     Write-Host "└─────────────────────────────────────────────────────────┘" -ForegroundColor Magenta
@@ -705,7 +709,7 @@ function Install-Repository {
             if (Test-Path $InstallDir) { Remove-Item -Recurse -Force $InstallDir -ErrorAction SilentlyContinue }
             Write-Warn "Git clone failed — downloading ZIP archive instead..."
             try {
-                $zipUrl = "https://github.com/NousResearch/hermes-agent/archive/refs/heads/$Branch.zip"
+                $zipUrl = "https://github.com/robertbr123/Linket-Agent/archive/refs/heads/$Branch.zip"
                 $zipPath = "$env:TEMP\hermes-agent-$Branch.zip"
                 $extractPath = "$env:TEMP\hermes-agent-extract"
 
@@ -1468,7 +1472,7 @@ try {
     Write-Err "Installation failed: $_"
     Write-Host ""
     Write-Info "If the error is unclear, try downloading and running the script directly:"
-    Write-Host "  Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1' -OutFile install.ps1" -ForegroundColor Yellow
+    Write-Host "  Invoke-WebRequest -Uri 'https://linket.com.br/install.ps1' -OutFile install.ps1" -ForegroundColor Yellow
     Write-Host "  .\install.ps1" -ForegroundColor Yellow
     Write-Host ""
 }
