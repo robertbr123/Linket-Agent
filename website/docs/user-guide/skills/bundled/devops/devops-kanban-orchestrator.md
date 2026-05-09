@@ -23,7 +23,7 @@ Decomposition playbook + specialist-roster conventions + anti-temptation rules f
 ## Reference: full SKILL.md
 
 :::info
-The following is the complete skill definition that Hermes loads when this skill is triggered. This is what the agent sees as instructions when the skill is active.
+The following is the complete skill definition that Linket loads when this skill is triggered. This is what the agent sees as instructions when the skill is active.
 :::
 
 # Kanban Orchestrator — Decomposition Playbook
@@ -147,7 +147,7 @@ Tell them what you created in plain prose:
 > - **T3** (analyst): synthesizes T1 + T2 into a recommendation
 > - **T4** (writer): turns T3 into a CTO memo
 >
-> The dispatcher will pick up T1 and T2 now. T3 starts when both finish. You'll get a gateway ping when T4 completes. Use the dashboard or `hermes kanban tail <id>` to follow along.
+> The dispatcher will pick up T1 and T2 now. T3 starts when both finish. You'll get a gateway ping when T4 completes. Use the dashboard or `linket kanban tail <id>` to follow along.
 
 ## Common patterns
 

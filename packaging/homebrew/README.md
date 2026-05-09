@@ -1,4 +1,4 @@
-Homebrew packaging notes for Hermes Agent.
+Homebrew packaging notes for Linket Agent.
 
 Use `packaging/homebrew/linket-agent.rb` as a tap or `homebrew-core` starting point.
 
@@ -9,6 +9,6 @@ Key choices:
 
 Typical update flow:
 1. Bump the formula `url`, `version`, and `sha256`.
-2. Refresh Python resources with `brew update-python-resources --print-only hermes-agent`.
+2. Refresh Python resources with `brew update-python-resources --print-only linket-agent`.
 3. Keep `ignore_packages: %w[certifi cryptography pydantic]`.
-4. Verify `brew audit --new --strict hermes-agent` and `brew test hermes-agent`.
+4. Verify `brew audit --new --strict linket-agent` and `brew test linket-agent`.

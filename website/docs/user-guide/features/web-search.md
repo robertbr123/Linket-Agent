@@ -7,13 +7,13 @@ sidebar_position: 6
 
 # Web Search & Extract
 
-Hermes Agent includes three web tools backed by multiple providers:
+Linket Agent includes three web tools backed by multiple providers:
 
 - **`web_search`** — search the web and return ranked results
 - **`web_extract`** — fetch and extract readable content from one or more URLs
 - **`web_crawl`** — recursively crawl a site and return structured content
 
-All three are configured through a single backend selection. Providers are chosen via `hermes tools` or set directly in `config.yaml`.
+All three are configured through a single backend selection. Providers are chosen via `linket tools` or set directly in `config.yaml`.
 
 ## Backends
 
@@ -28,19 +28,19 @@ All three are configured through a single backend selection. Providers are chose
 **Per-capability split:** you can use different providers for search and extract independently — for example SearXNG (free) for search and Firecrawl for extract. See [Per-capability configuration](#per-capability-configuration) below.
 
 :::tip Nous Subscribers
-If you have a paid [Nous Portal](https://portal.nousresearch.com) subscription, web search and extract are available through the **[Tool Gateway](tool-gateway.md)** via managed Firecrawl — no API key needed. Run `hermes tools` to enable it.
+If you have a paid [Nous Portal](https://portal.nousresearch.com) subscription, web search and extract are available through the **[Tool Gateway](tool-gateway.md)** via managed Firecrawl — no API key needed. Run `linket tools` to enable it.
 :::
 
 ---
 
 ## Setup
 
-### Quick setup via `hermes tools`
+### Quick setup via `linket tools`
 
-Run `hermes tools`, navigate to **Web Search & Extract**, and pick a provider. The wizard prompts for the required URL or API key and writes it to your config.
+Run `linket tools`, navigate to **Web Search & Extract**, and pick a provider. The wizard prompts for the required URL or API key and writes it to your config.
 
 ```bash
-hermes tools
+linket tools
 ```
 
 ---
@@ -50,7 +50,7 @@ hermes tools
 Full-featured search, extract, and crawl. Recommended for most users.
 
 ```bash
-# ~/.hermes/.env
+# ~/.linket/.env
 FIRECRAWL_API_KEY=fc-your-key-here
 ```
 
@@ -59,7 +59,7 @@ Get a key at [firecrawl.dev](https://firecrawl.dev). The free tier includes 500 
 **Self-hosted Firecrawl:** Point at your own instance instead of the cloud API:
 
 ```bash
-# ~/.hermes/.env
+# ~/.linket/.env
 FIRECRAWL_API_URL=http://localhost:3002
 ```
 
@@ -69,7 +69,7 @@ When `FIRECRAWL_API_URL` is set, the API key is optional (disable server auth wi
 
 ### SearXNG (free, self-hosted)
 
-SearXNG is a privacy-respecting, open-source metasearch engine that aggregates results from 70+ search engines. **No API key required** — just point Hermes at a running SearXNG instance.
+SearXNG is a privacy-respecting, open-source metasearch engine that aggregates results from 70+ search engines. **No API key required** — just point Linket at a running SearXNG instance.
 
 SearXNG is **search-only** — `web_extract` and `web_crawl` require a separate extract provider.
 
@@ -123,7 +123,7 @@ Open `~/searxng/searxng/settings.yml` and find the `formats` block (around line 
 formats:
   - html
 
-# After (enable JSON for Hermes):
+# After (enable JSON for Linket):
 formats:
   - html
   - json
@@ -145,21 +145,21 @@ curl -s "http://localhost:8888/search?q=test&format=json" | python3 -c \
 
 You should see something like `10 results`. If you get a `403 Forbidden`, JSON format is still disabled — recheck step 4.
 
-**7. Configure Hermes:**
+**7. Configure Linket:**
 
 ```bash
-# ~/.hermes/.env
+# ~/.linket/.env
 SEARXNG_URL=http://localhost:8888
 ```
 
-Then select SearXNG as the search backend in `~/.hermes/config.yaml`:
+Then select SearXNG as the search backend in `~/.linket/config.yaml`:
 
 ```yaml
 web:
   search_backend: "searxng"
 ```
 
-Or set via `hermes tools` → Web Search & Extract → SearXNG.
+Or set via `linket tools` → Web Search & Extract → SearXNG.
 
 ---
 
@@ -168,7 +168,7 @@ Or set via `hermes tools` → Web Search & Extract → SearXNG.
 Public SearXNG instances are listed at [searx.space](https://searx.space/). Filter by instances that have **JSON format enabled** (shown in the table).
 
 ```bash
-# ~/.hermes/.env
+# ~/.linket/.env
 SEARXNG_URL=https://searx.example.com
 ```
 
@@ -183,13 +183,13 @@ Public instances have rate limits, variable uptime, and may disable JSON format 
 SearXNG handles search; you need a separate provider for `web_extract` and `web_crawl`. Use the per-capability keys:
 
 ```yaml
-# ~/.hermes/config.yaml
+# ~/.linket/config.yaml
 web:
   search_backend: "searxng"
   extract_backend: "firecrawl"   # or tavily, exa, parallel
 ```
 
-With this config, Hermes uses SearXNG for all search queries and Firecrawl for URL extraction — combining free search with high-quality extraction.
+With this config, Linket uses SearXNG for all search queries and Firecrawl for URL extraction — combining free search with high-quality extraction.
 
 ---
 
@@ -198,7 +198,7 @@ With this config, Hermes uses SearXNG for all search queries and Firecrawl for U
 AI-optimised search, extract, and crawl with a generous free tier.
 
 ```bash
-# ~/.hermes/.env
+# ~/.linket/.env
 TAVILY_API_KEY=tvly-your-key-here
 ```
 
@@ -211,7 +211,7 @@ Get a key at [app.tavily.com](https://app.tavily.com/home). The free tier includ
 Neural search with semantic understanding. Good for research and finding conceptually related content.
 
 ```bash
-# ~/.hermes/.env
+# ~/.linket/.env
 EXA_API_KEY=your-exa-key-here
 ```
 
@@ -224,7 +224,7 @@ Get a key at [exa.ai](https://exa.ai). The free tier includes 1 000 searches/mon
 AI-native search and extraction with deep research capabilities.
 
 ```bash
-# ~/.hermes/.env
+# ~/.linket/.env
 PARALLEL_API_KEY=your-parallel-key-here
 ```
 
@@ -239,7 +239,7 @@ Get access at [parallel.ai](https://parallel.ai).
 Set one provider for all web capabilities:
 
 ```yaml
-# ~/.hermes/config.yaml
+# ~/.linket/config.yaml
 web:
   backend: "searxng"   # firecrawl | searxng | tavily | exa | parallel
 ```
@@ -249,7 +249,7 @@ web:
 Use different providers for search vs extract. This lets you combine free search (SearXNG) with a paid extract provider, or vice versa:
 
 ```yaml
-# ~/.hermes/config.yaml
+# ~/.linket/config.yaml
 web:
   search_backend: "searxng"     # used by web_search
   extract_backend: "firecrawl"  # used by web_extract and web_crawl
@@ -264,7 +264,7 @@ When per-capability keys are empty, both fall through to `web.backend`. When `we
 
 ### Auto-detection
 
-If no backend is explicitly configured, Hermes picks the first available one based on which credentials are set:
+If no backend is explicitly configured, Linket picks the first available one based on which credentials are set:
 
 | Credential present | Auto-selected backend |
 |--------------------|-----------------------|
@@ -278,7 +278,7 @@ If no backend is explicitly configured, Hermes picks the first available one bas
 
 ## Verify your setup
 
-Run `hermes setup` to see which web backend is detected:
+Run `linket setup` to see which web backend is detected:
 
 ```
 ✅ Web Search & Extract (searxng)
@@ -288,7 +288,7 @@ Or check via the CLI:
 
 ```bash
 # Activate the venv and run the web tools module directly
-source ~/.hermes/hermes-agent/.venv/bin/activate
+source ~/.linket/linket-agent/.venv/bin/activate
 python -m tools.web_tools
 ```
 
@@ -337,7 +337,7 @@ Switch to a self-hosted instance (see [Option A](#option-a--self-host-with-docke
 For agents that need to use SearXNG via `curl` directly (e.g. as a fallback when the web toolset isn't available), install the `searxng-search` optional skill:
 
 ```bash
-hermes skills install official/research/searxng-search
+linket skills install official/research/searxng-search
 ```
 
 This adds a skill that teaches the agent how to:

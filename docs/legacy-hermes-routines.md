@@ -1,3 +1,10 @@
+<!--
+  Historical document from upstream Hermes Agent (Nous Research),
+  preserved here for context.  Linket Agent inherits the routines
+  feature described below; the post itself was authored before the
+  Linket fork existed and is kept in its original framing.
+-->
+
 # Hermes Agent Has Had "Routines" Since March
 
 Anthropic just announced [Claude Code Routines](https://claude.com/blog/introducing-routines-in-claude-code) — scheduled tasks, GitHub event triggers, and API-triggered agent runs. Bundled prompt + repo + connectors, running on their infrastructure.

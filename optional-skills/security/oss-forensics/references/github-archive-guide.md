@@ -163,7 +163,7 @@ ORDER BY event_count DESC
 
 ---
 
-## Accessing via Hermes
+## Accessing via Linket
 
 **Option A: BigQuery CLI** (if `gcloud` is installed)
 ```bash

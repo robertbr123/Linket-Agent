@@ -1,6 +1,6 @@
-# Hermes Agent — Web UI
+# Linket Agent — Web UI
 
-Browser-based dashboard for managing Hermes Agent configuration, API keys, and monitoring active sessions.
+Browser-based dashboard for managing Linket Agent configuration, API keys, and monitoring active sessions.
 
 ## Stack
 

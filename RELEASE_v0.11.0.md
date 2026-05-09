@@ -1,3 +1,10 @@
+<!--
+  Historical release notes from upstream Hermes Agent (Nous Research),
+  preserved verbatim.  This file pre-dates the Linket Agent fork and is
+  not edited in-place — see CHANGELOG.md (post-fork) for Linket-specific
+  releases once that file lands.
+-->
+
 # Hermes Agent v0.11.0 (v2026.4.23)
 
 **Release Date:** April 23, 2026
