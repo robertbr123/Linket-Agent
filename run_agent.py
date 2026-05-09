@@ -14938,6 +14938,13 @@ def main(
     print("\n👋 Agent execution completed!")
 
 
+def _main_deprecated_hermes_agent():
+    """Deprecated alias for the ``linket-agent`` CLI command."""
+    from hermes_cli._legacy_alias import warn_deprecated
+    warn_deprecated("hermes-agent", "linket-agent")
+    return main()
+
+
 if __name__ == "__main__":
     import fire
     fire.Fire(main)

@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+"""
+Linket Agent CLI launcher.
+
+This wrapper behaves like the installed ``linket`` command, including
+subcommands such as ``gateway``, ``cron``, and ``doctor``. It is
+intended for development use from a checkout — installed users get the
+same entry point via ``pip install -e .`` (see [project.scripts] in
+pyproject.toml).
+"""
+
+if __name__ == "__main__":
+    from hermes_cli.main import main
+    main()

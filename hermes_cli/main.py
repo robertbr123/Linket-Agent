@@ -11476,5 +11476,12 @@ Examples:
         parser.print_help()
 
 
+def _main_deprecated_hermes():
+    """Deprecated alias for the ``linket`` CLI command. See _legacy_alias.py."""
+    from hermes_cli._legacy_alias import warn_deprecated
+    warn_deprecated("hermes", "linket")
+    return main()
+
+
 if __name__ == "__main__":
     main()

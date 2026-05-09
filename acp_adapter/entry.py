@@ -144,5 +144,12 @@ def main() -> None:
         sys.exit(1)
 
 
+def _main_deprecated_hermes_acp() -> None:
+    """Deprecated alias for the ``linket-acp`` CLI command."""
+    from hermes_cli._legacy_alias import warn_deprecated
+    warn_deprecated("hermes-acp", "linket-acp")
+    return main()
+
+
 if __name__ == "__main__":
     main()
