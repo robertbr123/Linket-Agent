@@ -2,6 +2,13 @@
 .DS_Store
 Thumbs.db
 
+# macOS / iCloud / Finder duplication artefacts.
+# When a file gets copied while another process holds it open (iCloud sync,
+# Time Machine restore, GitHub Desktop concurrent checkout), Finder names
+# the duplicate "<original> 2.<ext>" — these are never wanted in commits.
+* 2
+* 2.*
+
 # Python
 __pycache__/
 *.py[cod]
