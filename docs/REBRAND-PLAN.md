@@ -22,12 +22,12 @@ Atualize este arquivo a cada fase concluída. Branch principal do trabalho:
 | 2 | ✅ | `ad00955` | `pyproject.toml`, `package.json`, `flake.nix`, `docker-compose.yml`, `LICENSE` |
 | 3 | ✅ | `fc51284` | `install.{sh,ps1,cmd}` repointados; `infra/redirect-worker.js` + guia |
 |   – | ✅ | `b943f1b` | Limpeza: ignora duplicatas macOS/iCloud `* 2.*` |
-| 4 | ✅ | `<este>` | CLI `hermes`→`linket` com deprecation shim; `_legacy_alias.py` |
+| 4 | ✅ | `3a2a640` | CLI `hermes`→`linket` com deprecation shim; `_legacy_alias.py` |
 | 5 | ⏸ adiado | — | **Rename do módulo Python `hermes_cli/` → `linket_cli/`** (ver detalhamento abaixo) |
-| 6 | ⏳ | — | Runtime path `~/.hermes/` → `~/.linket/` + auto-migração |
-| 7 | ⏳ | — | Skills, plugins, environments — renomeio de dirs/arquivos |
-| 8 | ⏳ | — | Documentação completa (READMEs, `website/docs/`) |
-| 9 | ⏳ | — | `NOTICE.md` com atribuição upstream + ajustes éticos/legais finais |
+| 6 | ✅ | `fcb82cf` | Runtime path `~/.linket` default + auto-migração `~/.hermes` → `~/.linket`; `LINKET_HOME` env var |
+| 7 | ✅ | `<este>` | Skills, plugins, packaging, website/docs — `git mv` de 10+ paths + 127 cross-refs |
+| 8 | ✅ | `<este>` | 580 .md/.mdx files rebranded (mass + manual READMEs); RELEASE_v*.md prefixados com nota histórica |
+| 9 | ✅ | `<este>` | `NOTICE.md` com atribuição upstream completa |
 | 10 | ⏳ | — | Verificação final (grep residual, imports, smoke test) |
 
 ## Tarefas externas (você, fora do código)
@@ -202,4 +202,4 @@ mktemp -d /tmp/linket-test-XXXX
 
 ---
 
-_Última atualização: 2026-05-09 — Fase 4 concluída, Fase 5 adiada._
+_Última atualização: 2026-05-09 — Fases 0–4, 6, 7, 8, 9 concluídas. Fase 5 adiada (depende de pytest); Fase 10 pendente._
