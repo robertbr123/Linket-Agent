@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-05-09T06:53:25.070Z",
+  "source": "auto-postool",
+  "partial": false,
+  "phase": null,
+  "phase_name": null,
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "auto-checkpoint",
+  "completed_tasks": [],
+  "remaining_tasks": [],
+  "blockers": [],
+  "human_actions_pending": [],
+  "decisions": [],
+  "uncommitted_files": [
+    {
+      "status": "M",
+      "path": "docs/REBRAND-PLAN.md"
+    },
+    {
+      "status": "??",
+      "path": "NOTICE.md"
+    }
+  ],
+  "next_action": null,
+  "context_notes": "Recent commits:\nca33177 docs: rebrand documentation surface — Hermes Agent → Linket Agent\n161d653 refactor(paths): rename hermes-* skill / plugin / packaging directories\nfcb82cf feat(runtime): default home dir ~/.linket with auto-migration from ~/.hermes\n31a68ee docs: add REBRAND-PLAN.md tracking rebrand status and pending phases\n3a2a640 feat(cli): rename CLI binary hermes → linket with deprecation shim"
+}
