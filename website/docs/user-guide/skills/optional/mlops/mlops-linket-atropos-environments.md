@@ -14,8 +14,8 @@ Build, test, and debug Hermes Agent RL environments for Atropos training. Covers
 
 | | |
 |---|---|
-| Source | Optional — install with `hermes skills install official/mlops/hermes-atropos-environments` |
-| Path | `optional-skills/mlops/hermes-atropos-environments` |
+| Source | Optional — install with `hermes skills install official/mlops/linket-atropos-environments` |
+| Path | `optional-skills/mlops/linket-atropos-environments` |
 | Version | `1.1.0` |
 | Author | Hermes Agent |
 | License | MIT |

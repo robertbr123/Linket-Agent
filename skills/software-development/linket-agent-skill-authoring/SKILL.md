@@ -1,5 +1,5 @@
 ---
-name: hermes-agent-skill-authoring
+name: linket-agent-skill-authoring
 description: "Author in-repo SKILL.md: frontmatter, validator, structure."
 version: 1.0.0
 author: Hermes Agent

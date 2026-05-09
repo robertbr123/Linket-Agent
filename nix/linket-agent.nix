@@ -1,4 +1,4 @@
-# nix/hermes-agent.nix — Overridable Hermes Agent package
+# nix/linket-agent.nix — Overridable Hermes Agent package
 #
 # callPackage auto-wires nixpkgs args; flake inputs are passed explicitly.
 # Users override via: pkgs.hermes-agent.override { extraPythonPackages = [...]; }

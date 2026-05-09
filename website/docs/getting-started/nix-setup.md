@@ -82,7 +82,7 @@ This module requires NixOS. For non-NixOS systems (macOS, other Linux distros), 
     nixosConfigurations.your-host = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        hermes-agent.nixosModules.default
+        linket-agent.nixosModules.default
         ./configuration.nix
       ];
     };

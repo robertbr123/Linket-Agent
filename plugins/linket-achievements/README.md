@@ -1,8 +1,8 @@
 # Hermes Achievements
 
-> **Bundled with Hermes Agent.** Originally authored by [@PCinkusz](https://github.com/PCinkusz) at https://github.com/PCinkusz/hermes-achievements — vendored into `plugins/hermes-achievements/` so it ships with the dashboard out-of-the-box and stays in lockstep with Hermes feature changes. Upstream repo remains the staging ground for new badges and UI iteration.
+> **Bundled with Hermes Agent.** Originally authored by [@PCinkusz](https://github.com/PCinkusz) at https://github.com/PCinkusz/linket-achievements — vendored into `plugins/linket-achievements/` so it ships with the dashboard out-of-the-box and stays in lockstep with Hermes feature changes. Upstream repo remains the staging ground for new badges and UI iteration.
 >
-> When Hermes is installed via `pip install hermes-agent` or cloned from source, this plugin auto-registers as a dashboard tab on first `hermes dashboard` launch. No separate install step. See [Built-in Plugins → hermes-achievements](../../website/docs/user-guide/features/built-in-plugins.md) in the main docs.
+> When Hermes is installed via `pip install hermes-agent` or cloned from source, this plugin auto-registers as a dashboard tab on first `hermes dashboard` launch. No separate install step. See [Built-in Plugins → linket-achievements](../../website/docs/user-guide/features/built-in-plugins.md) in the main docs.
 
 Achievement system for the Hermes Dashboard: collectible, tiered badges generated from real local Hermes session history.
 
@@ -61,14 +61,14 @@ Version `0.2.x` expands the catalog to 60+ achievements, including model/provide
 Clone into your Hermes plugins directory:
 
 ```bash
-git clone https://github.com/PCinkusz/hermes-achievements ~/.hermes/plugins/hermes-achievements
+git clone https://github.com/PCinkusz/linket-achievements ~/.hermes/plugins/linket-achievements
 ```
 
 For local development, keep the repo elsewhere and symlink it:
 
 ```bash
-git clone https://github.com/PCinkusz/hermes-achievements ~/hermes-achievements
-ln -s ~/hermes-achievements ~/.hermes/plugins/hermes-achievements
+git clone https://github.com/PCinkusz/linket-achievements ~/linket-achievements
+ln -s ~/linket-achievements ~/.hermes/plugins/linket-achievements
 ```
 
 Then rescan dashboard plugins:
@@ -84,7 +84,7 @@ If backend API routes 404, restart `hermes dashboard`; plugin APIs are mounted a
 If you installed with git:
 
 ```bash
-cd ~/.hermes/plugins/hermes-achievements
+cd ~/.hermes/plugins/linket-achievements
 git pull --ff-only
 curl http://127.0.0.1:9119/api/dashboard/plugins/rescan
 ```
@@ -121,7 +121,7 @@ dashboard/
 Routes are mounted under:
 
 ```text
-/api/plugins/hermes-achievements/
+/api/plugins/linket-achievements/
 ```
 
 Endpoints:

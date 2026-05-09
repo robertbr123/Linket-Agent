@@ -20,7 +20,7 @@ Debug Python: pdb REPL + debugpy remote (DAP).
 | Author | Hermes Agent |
 | License | MIT |
 | Tags | `debugging`, `python`, `pdb`, `debugpy`, `breakpoints`, `dap`, `post-mortem` |
-| Related skills | [`systematic-debugging`](/docs/user-guide/skills/bundled/software-development/software-development-systematic-debugging), [`node-inspect-debugger`](/docs/user-guide/skills/bundled/software-development/software-development-node-inspect-debugger), [`debugging-hermes-tui-commands`](/docs/user-guide/skills/bundled/software-development/software-development-debugging-hermes-tui-commands) |
+| Related skills | [`systematic-debugging`](/docs/user-guide/skills/bundled/software-development/software-development-systematic-debugging), [`node-inspect-debugger`](/docs/user-guide/skills/bundled/software-development/software-development-node-inspect-debugger), [`debugging-linket-tui-commands`](/docs/user-guide/skills/bundled/software-development/software-development-debugging-linket-tui-commands) |
 
 ## Reference: full SKILL.md
 

@@ -44,7 +44,7 @@ hermes-agent/
 │   ├── context_engine/   # Context-engine plugins
 │   ├── model-providers/  # Inference backend plugins (openrouter, anthropic, gmi, ...)
 │   ├── kanban/           # Multi-agent board dispatcher + worker plugin
-│   ├── hermes-achievements/  # Gamified achievement tracking
+│   ├── linket-achievements/  # Gamified achievement tracking
 │   ├── observability/    # Metrics / traces / logs plugin
 │   ├── image_gen/        # Image-generation providers
 │   └── <others>/         # disk-cleanup, example-dashboard, google_meet, platforms,
@@ -722,7 +722,7 @@ kanban task.
   assigned profiles. Runs **inside the gateway** by default via
   `kanban.dispatch_in_gateway: true`.
 - **Plugin assets:** `plugins/kanban/dashboard/` (web UI) +
-  `plugins/kanban/systemd/` (`hermes-kanban-dispatcher.service` for
+  `plugins/kanban/systemd/` (`linket-kanban-dispatcher.service` for
   standalone dispatcher deployment).
 
 Isolation model:
