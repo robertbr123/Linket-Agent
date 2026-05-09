@@ -2,12 +2,18 @@
 # docker-compose.yml for Linket Agent
 #
 # Usage:
-#   HERMES_UID=$(id -u) HERMES_GID=$(id -g) docker compose up -d
+#   LINKET_UID=$(id -u) LINKET_GID=$(id -g) docker compose up -d
 #
-# Set HERMES_UID / HERMES_GID to the host user that owns ~/.hermes so
-# files created inside the container stay readable/writable on the host.
-# The entrypoint remaps the internal `hermes` user to these values via
-# usermod/groupmod + gosu.
+# (HERMES_UID / HERMES_GID are accepted as legacy aliases — see entrypoint.)
+#
+# Set LINKET_UID / LINKET_GID to the host user that owns ~/.linket so files
+# created inside the container stay readable/writable on the host.
+# The entrypoint remaps the internal runtime user to these values via
+# usermod/groupmod + gosu.  The internal container user/path layout
+# (``/opt/hermes``, system user ``hermes``) is unchanged in this rebrand —
+# only the host-side volume path and the user-facing env var spellings
+# moved.  Renaming the in-container layout is a separate change that
+# requires a Docker image rebuild.
 #
 # Security notes:
 #   - The dashboard service binds to 127.0.0.1 by default. It stores API
@@ -15,7 +21,7 @@
 #     access, use an SSH tunnel or put it behind a reverse proxy that
 #     adds authentication — do NOT pass --insecure --host 0.0.0.0.
 #   - If you override entrypoint, keep /opt/hermes/docker/entrypoint.sh in
-#     the command chain. It drops root to the hermes user before gateway
+#     the command chain. It drops root to the runtime user before gateway
 #     files such as gateway.lock are created.
 #   - The gateway's API server is off unless you uncomment API_SERVER_KEY
 #     and API_SERVER_HOST. See docs/user-guide/api-server.md before doing
@@ -25,14 +31,22 @@ services:
   gateway:
     build: .
     image: linket-agent
-    container_name: hermes
+    container_name: linket
     restart: unless-stopped
     network_mode: host
     volumes:
-      - ~/.hermes:/opt/data
+      # Host bind-mount.  Defaults to ~/.linket; override with $LINKET_DATA_DIR
+      # if you want to keep state somewhere else.  Existing users running off
+      # ~/.hermes can keep doing so by setting LINKET_DATA_DIR=$HOME/.hermes.
+      - ${LINKET_DATA_DIR:-~/.linket}:/opt/data
     environment:
-      - HERMES_UID=${HERMES_UID:-10000}
-      - HERMES_GID=${HERMES_GID:-10000}
+      # LINKET_UID/GID are canonical; HERMES_UID/GID are accepted as legacy
+      # aliases by the entrypoint.  The default 10000 matches the internal
+      # runtime user UID baked into the image.
+      - LINKET_UID=${LINKET_UID:-${HERMES_UID:-10000}}
+      - LINKET_GID=${LINKET_GID:-${HERMES_GID:-10000}}
+      - HERMES_UID=${LINKET_UID:-${HERMES_UID:-10000}}
+      - HERMES_GID=${LINKET_GID:-${HERMES_GID:-10000}}
       # To expose the OpenAI-compatible API server beyond localhost,
       # uncomment BOTH lines (API_SERVER_KEY is mandatory for auth):
       # - API_SERVER_HOST=0.0.0.0
@@ -47,7 +61,7 @@ services:
       # Google Chat — uncomment and fill in to enable the Google Chat gateway.
       # See website/docs/user-guide/messaging/google_chat.md for the full setup.
       # The SA JSON path must point to a file mounted into the container —
-      # add a volume entry above (e.g. ``- ~/.hermes/google-chat-sa.json:/secrets/google-chat-sa.json:ro``)
+      # add a volume entry above (e.g. ``- ~/.linket/google-chat-sa.json:/secrets/google-chat-sa.json:ro``)
       # then set GOOGLE_CHAT_SERVICE_ACCOUNT_JSON to that mount path.
       # - GOOGLE_CHAT_PROJECT_ID=${GOOGLE_CHAT_PROJECT_ID}
       # - GOOGLE_CHAT_SUBSCRIPTION_NAME=${GOOGLE_CHAT_SUBSCRIPTION_NAME}
@@ -57,15 +71,17 @@ services:
 
   dashboard:
     image: linket-agent
-    container_name: hermes-dashboard
+    container_name: linket-dashboard
     restart: unless-stopped
     network_mode: host
     depends_on:
       - gateway
     volumes:
-      - ~/.hermes:/opt/data
+      - ${LINKET_DATA_DIR:-~/.linket}:/opt/data
     environment:
-      - HERMES_UID=${HERMES_UID:-10000}
-      - HERMES_GID=${HERMES_GID:-10000}
+      - LINKET_UID=${LINKET_UID:-${HERMES_UID:-10000}}
+      - LINKET_GID=${LINKET_GID:-${HERMES_GID:-10000}}
+      - HERMES_UID=${LINKET_UID:-${HERMES_UID:-10000}}
+      - HERMES_GID=${LINKET_GID:-${HERMES_GID:-10000}}
     # Localhost-only. For remote access, tunnel via `ssh -L 9119:localhost:9119`.
     command: ["dashboard", "--host", "127.0.0.1", "--no-open"]

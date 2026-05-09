@@ -50,11 +50,29 @@ BOLD='\033[1m'
 # Configuration
 REPO_URL_SSH="git@github.com:robertbr123/Linket-Agent.git"
 REPO_URL_HTTPS="https://github.com/robertbr123/Linket-Agent.git"
-HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
+# Resolve the agent's home directory.  LINKET_HOME is canonical; HERMES_HOME
+# is honoured as a legacy alias so existing scripts and shell rcfiles keep
+# working through the rebrand.  Default is ~/.linket on fresh installs but
+# falls back to ~/.hermes on machines that pre-date the rename, so the
+# upgrade path doesn't strand the user's existing state.
+if [ -n "${LINKET_HOME:-}" ]; then
+    HERMES_HOME="$LINKET_HOME"
+elif [ -n "${HERMES_HOME:-}" ]; then
+    : # already set by caller — keep it
+elif [ -d "$HOME/.linket" ]; then
+    HERMES_HOME="$HOME/.linket"
+elif [ -d "$HOME/.hermes" ]; then
+    HERMES_HOME="$HOME/.hermes"
+else
+    HERMES_HOME="$HOME/.linket"
+fi
 # INSTALL_DIR is resolved AFTER arg parsing and OS detection so we can pick an
 # FHS-style layout for root installs.  Track whether the user gave us an
 # explicit directory — if so we never override it.
-if [ -n "${HERMES_INSTALL_DIR:-}" ]; then
+if [ -n "${LINKET_INSTALL_DIR:-}" ]; then
+    INSTALL_DIR="$LINKET_INSTALL_DIR"
+    INSTALL_DIR_EXPLICIT=true
+elif [ -n "${HERMES_INSTALL_DIR:-}" ]; then
     INSTALL_DIR="$HERMES_INSTALL_DIR"
     INSTALL_DIR_EXPLICIT=true
 else
@@ -65,8 +83,8 @@ PYTHON_VERSION="3.11"
 NODE_VERSION="22"
 
 # FHS-style root install layout (set by resolve_install_layout when applicable):
-#   code at /usr/local/lib/hermes-agent, command at /usr/local/bin/hermes,
-#   data still at /root/.hermes (HERMES_HOME).  Matches Claude Code / Codex CLI
+#   code at /usr/local/lib/linket-agent, command at /usr/local/bin/linket,
+#   data still at /root/.linket (LINKET_HOME).  Matches Claude Code / Codex CLI
 #   and keeps Docker bind-mounted /root/ volumes lean.
 ROOT_FHS_LAYOUT=false
 
@@ -104,7 +122,8 @@ while [[ $# -gt 0 ]]; do
             INSTALL_DIR_EXPLICIT=true
             shift 2
             ;;
-        --hermes-home)
+        --linket-home|--hermes-home)
+            # --linket-home is canonical; --hermes-home kept as legacy alias.
             HERMES_HOME="$2"
             shift 2
             ;;
@@ -118,19 +137,20 @@ while [[ $# -gt 0 ]]; do
             echo "  --skip-setup   Skip interactive setup wizard"
             echo "  --branch NAME  Git branch to install (default: main)"
             echo "  --dir PATH     Installation directory"
-            echo "                   default (non-root):  ~/.hermes/hermes-agent"
-            echo "                   default (root, Linux): /usr/local/lib/hermes-agent"
-            echo "  --hermes-home PATH  Data directory (default: ~/.hermes, or \$HERMES_HOME)"
+            echo "                   default (non-root):  ~/.linket/linket-agent"
+            echo "                   default (root, Linux): /usr/local/lib/linket-agent"
+            echo "  --linket-home PATH  Data directory (default: ~/.linket, or \$LINKET_HOME / \$HERMES_HOME)"
+            echo "                      (--hermes-home accepted as legacy alias)"
             echo "  -h, --help     Show this help"
             echo ""
             echo "Notes:"
             echo "  When running as root on Linux, Hermes installs the code under"
-            echo "  /usr/local/lib/hermes-agent and links the command into"
+            echo "  /usr/local/lib/linket-agent and links the command into"
             echo "  /usr/local/bin/hermes (FHS layout — matches Claude Code / Codex CLI)."
             echo "  Data, config, sessions, and logs still live in \$HERMES_HOME"
-            echo "  (default /root/.hermes).  This keeps Docker bind-mounted volumes"
+            echo "  (default /root/.linket).  This keeps Docker bind-mounted volumes"
             echo "  small and ensures the command is on PATH for all shells."
-            echo "  Existing installs at \$HERMES_HOME/hermes-agent are preserved in-place."
+            echo "  Existing installs at \$HERMES_HOME/{linket-agent,hermes-agent} are preserved in-place."
             exit 0
             ;;
         *)
@@ -216,16 +236,16 @@ is_termux() {
 # symlink goes.  Called after detect_os so $OS/$DISTRO are known.
 #
 # Defaults:
-#   - Non-root, any OS:       INSTALL_DIR = $HERMES_HOME/hermes-agent
+#   - Non-root, any OS:       INSTALL_DIR = $HERMES_HOME/linket-agent
 #                             command link in $HOME/.local/bin
-#   - Termux (any uid):       INSTALL_DIR = $HERMES_HOME/hermes-agent
+#   - Termux (any uid):       INSTALL_DIR = $HERMES_HOME/linket-agent
 #                             command link in $PREFIX/bin (already on PATH)
-#   - Root on Linux (new):    INSTALL_DIR = /usr/local/lib/hermes-agent
+#   - Root on Linux (new):    INSTALL_DIR = /usr/local/lib/linket-agent
 #                             command link in /usr/local/bin
-#                             (unless a legacy install already exists at
-#                              $HERMES_HOME/hermes-agent — then preserve it)
+#                             (unless a legacy hermes-agent install already
+#                              exists — then preserve it in-place)
 #
-# Always no-op when the user set --dir or $HERMES_INSTALL_DIR.
+# Always no-op when the user set --dir or $LINKET_INSTALL_DIR/$HERMES_INSTALL_DIR.
 resolve_install_layout() {
     if [ "$INSTALL_DIR_EXPLICIT" = true ]; then
         log_info "Install directory: $INSTALL_DIR (explicit)"
@@ -234,7 +254,12 @@ resolve_install_layout() {
 
     # Termux: package manager manages /data/data/..., keep code in HERMES_HOME.
     if is_termux; then
-        INSTALL_DIR="$HERMES_HOME/hermes-agent"
+        if [ -d "$HERMES_HOME/hermes-agent/.git" ]; then
+            INSTALL_DIR="$HERMES_HOME/hermes-agent"
+            log_info "Existing legacy install detected at $INSTALL_DIR — keeping it in place"
+        else
+            INSTALL_DIR="$HERMES_HOME/linket-agent"
+        fi
         return 0
     fi
 
@@ -242,23 +267,33 @@ resolve_install_layout() {
     # macOS root installs keep the legacy layout because /usr/local/ on macOS
     # is Homebrew territory and we don't want to fight that.
     if [ "$OS" = "linux" ] && [ "$(id -u)" -eq 0 ]; then
-        if [ -d "$HERMES_HOME/hermes-agent/.git" ]; then
-            INSTALL_DIR="$HERMES_HOME/hermes-agent"
-            log_info "Existing install detected at $INSTALL_DIR — keeping legacy layout"
-            log_info "  (new root installs use /usr/local/lib/hermes-agent)"
-            return 0
-        fi
-        INSTALL_DIR="/usr/local/lib/hermes-agent"
+        # Honour existing installs whether they were created under the legacy
+        # ``hermes-agent`` name or the new ``linket-agent`` name.
+        for _legacy_path in "$HERMES_HOME/linket-agent" "$HERMES_HOME/hermes-agent" "/usr/local/lib/hermes-agent"; do
+            if [ -d "$_legacy_path/.git" ]; then
+                INSTALL_DIR="$_legacy_path"
+                log_info "Existing install detected at $INSTALL_DIR — keeping in place"
+                log_info "  (new root installs use /usr/local/lib/linket-agent)"
+                return 0
+            fi
+        done
+        INSTALL_DIR="/usr/local/lib/linket-agent"
         ROOT_FHS_LAYOUT=true
         log_info "Root install on Linux — using FHS layout"
         log_info "  Code:    $INSTALL_DIR"
-        log_info "  Command: /usr/local/bin/hermes"
+        log_info "  Command: /usr/local/bin/linket"
         log_info "  Data:    $HERMES_HOME (unchanged)"
         return 0
     fi
 
-    # Default: non-root, non-Termux → legacy user-scoped layout.
-    INSTALL_DIR="$HERMES_HOME/hermes-agent"
+    # Default: non-root, non-Termux → user-scoped layout.  Reuse a legacy
+    # ``hermes-agent`` checkout if it's there so existing users don't get
+    # a duplicate install side-by-side with their working one.
+    if [ -d "$HERMES_HOME/hermes-agent/.git" ]; then
+        INSTALL_DIR="$HERMES_HOME/hermes-agent"
+    else
+        INSTALL_DIR="$HERMES_HOME/linket-agent"
+    fi
 }
 
 get_command_link_dir() {
@@ -588,7 +623,7 @@ install_node() {
         return 0
     fi
 
-    log_info "Extracting to ~/.hermes/node/..."
+    log_info "Extracting to $HERMES_HOME/node/..."
     if [[ "$tarball_name" == *.tar.xz ]]; then
         tar xf "$tmp_dir/$tarball_name" -C "$tmp_dir"
     else
@@ -605,7 +640,7 @@ install_node() {
         return 0
     fi
 
-    # Place into ~/.hermes/node/ and symlink binaries to ~/.local/bin/
+    # Place into $HERMES_HOME/node/ and symlink binaries to ~/.local/bin/
     rm -rf "$HERMES_HOME/node"
     mkdir -p "$HERMES_HOME"
     mv "$extracted_dir" "$HERMES_HOME/node"
@@ -620,7 +655,7 @@ install_node() {
 
     local installed_ver
     installed_ver=$("$HERMES_HOME/node/bin/node" --version 2>/dev/null)
-    log_success "Node.js $installed_ver installed to ~/.hermes/node/"
+    log_success "Node.js $installed_ver installed to $HERMES_HOME/node/"
     HAS_NODE=true
 }
 
@@ -1240,30 +1275,30 @@ EOF
 copy_config_templates() {
     log_info "Setting up configuration files..."
 
-    # Create ~/.hermes directory structure (config at top level, code in subdir)
+    # Create the agent home directory structure (config at top level, code in subdir)
     mkdir -p "$HERMES_HOME"/{cron,sessions,logs,pairing,hooks,image_cache,audio_cache,memories,skills}
 
-    # Create .env at ~/.hermes/.env (top level, easy to find)
+    # Create .env at $HERMES_HOME/.env (top level, easy to find)
     if [ ! -f "$HERMES_HOME/.env" ]; then
         if [ -f "$INSTALL_DIR/.env.example" ]; then
             cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env"
-            log_success "Created ~/.hermes/.env from template"
+            log_success "Created $HERMES_HOME/.env from template"
         else
             touch "$HERMES_HOME/.env"
-            log_success "Created ~/.hermes/.env"
+            log_success "Created $HERMES_HOME/.env"
         fi
     else
-        log_info "~/.hermes/.env already exists, keeping it"
+        log_info "$HERMES_HOME/.env already exists, keeping it"
     fi
 
-    # Create config.yaml at ~/.hermes/config.yaml (top level, easy to find)
+    # Create config.yaml at $HERMES_HOME/config.yaml (top level, easy to find)
     if [ ! -f "$HERMES_HOME/config.yaml" ]; then
         if [ -f "$INSTALL_DIR/cli-config.yaml.example" ]; then
             cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml"
-            log_success "Created ~/.hermes/config.yaml from template"
+            log_success "Created $HERMES_HOME/config.yaml from template"
         fi
     else
-        log_info "~/.hermes/config.yaml already exists, keeping it"
+        log_info "$HERMES_HOME/config.yaml already exists, keeping it"
     fi
 
     # Create SOUL.md if it doesn't exist (global persona file)
@@ -1285,20 +1320,20 @@ This file is loaded fresh each message -- no restart needed.
 Delete the contents (or this file) to use the default personality.
 -->
 SOUL_EOF
-        log_success "Created ~/.hermes/SOUL.md (edit to customize personality)"
+        log_success "Created $HERMES_HOME/SOUL.md (edit to customize personality)"
     fi
 
-    log_success "Configuration directory ready: ~/.hermes/"
+    log_success "Configuration directory ready: $HERMES_HOME/"
 
-    # Seed bundled skills into ~/.hermes/skills/ (manifest-based, one-time per skill)
-    log_info "Syncing bundled skills to ~/.hermes/skills/ ..."
+    # Seed bundled skills into $HERMES_HOME/skills/ (manifest-based, one-time per skill)
+    log_info "Syncing bundled skills to $HERMES_HOME/skills/ ..."
     if "$INSTALL_DIR/venv/bin/python" "$INSTALL_DIR/tools/skills_sync.py" 2>/dev/null; then
-        log_success "Skills synced to ~/.hermes/skills/"
+        log_success "Skills synced to $HERMES_HOME/skills/"
     else
         # Fallback: simple directory copy if Python sync fails
         if [ -d "$INSTALL_DIR/skills" ] && [ ! "$(ls -A "$HERMES_HOME/skills/" 2>/dev/null | grep -v '.bundled_manifest')" ]; then
             cp -r "$INSTALL_DIR/skills/"* "$HERMES_HOME/skills/" 2>/dev/null || true
-            log_success "Skills copied to ~/.hermes/skills/"
+            log_success "Skills copied to $HERMES_HOME/skills/"
         fi
     fi
 }
@@ -1515,7 +1550,7 @@ maybe_start_gateway() {
             fi
             nohup $HERMES_CMD gateway > "$HERMES_HOME/logs/gateway.log" 2>&1 &
             GATEWAY_PID=$!
-            log_success "Gateway started (PID $GATEWAY_PID). Logs: ~/.hermes/logs/gateway.log"
+            log_success "Gateway started (PID $GATEWAY_PID). Logs: $HERMES_HOME/logs/gateway.log"
             log_info "To stop: kill $GATEWAY_PID"
             log_info "To restart later: hermes gateway"
             if [ "$DISTRO" = "termux" ]; then

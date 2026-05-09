@@ -25,11 +25,23 @@ try:
 except (ModuleNotFoundError, ImportError):
 
     def get_hermes_home() -> Path:
-        """Return the Hermes home directory (default: ~/.hermes).
+        """Return the agent home directory (default: ~/.linket; ~/.hermes legacy).
 
-        Mirrors ``hermes_constants.get_hermes_home()``."""
-        val = os.environ.get("HERMES_HOME", "").strip()
-        return Path(val) if val else Path.home() / ".hermes"
+        Mirrors ``hermes_constants.get_hermes_home()``: prefers ``LINKET_HOME``
+        env, then ``HERMES_HOME``, then ``~/.linket`` if it exists, then
+        ``~/.hermes`` for legacy installs, with ``~/.linket`` as the final
+        default for fresh setups."""
+        for var in ("LINKET_HOME", "HERMES_HOME"):
+            val = os.environ.get(var, "").strip()
+            if val:
+                return Path(val)
+        new = Path.home() / ".linket"
+        if new.exists():
+            return new
+        legacy = Path.home() / ".hermes"
+        if legacy.exists():
+            return legacy
+        return new
 
     def display_hermes_home() -> str:
         """Return a user-friendly ``~/``-shortened display string.

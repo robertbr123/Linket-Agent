@@ -1,7 +1,14 @@
-"""Shared constants for Hermes Agent.
+"""Shared constants for Linket Agent.
 
 Import-safe module with no dependencies — can be imported from anywhere
 without risk of circular imports.
+
+Naming note: Python identifiers (``HERMES_HOME``, ``get_hermes_home``)
+keep the legacy ``hermes`` spelling because renaming them is a separate
+codebase-wide rename (Phase 5 of the rebrand). User-visible *paths* and
+*environment variables* are already on the new spelling: ``~/.linket``
+and ``LINKET_HOME``, with the old ``~/.hermes`` and ``HERMES_HOME``
+honoured as legacy fallbacks.
 """
 
 import os
@@ -10,24 +17,57 @@ from pathlib import Path
 
 _profile_fallback_warned: bool = False
 
+# Default home directory names.  ``~/.linket`` is canonical; ``~/.hermes``
+# is recognised on legacy machines that haven't been migrated yet.
+_NEW_HOME_NAME = ".linket"
+_LEGACY_HOME_NAME = ".hermes"
+
+
+def _resolve_home_env() -> str:
+    """Pick up an explicit home-dir env override, preferring the new name."""
+    val = os.environ.get("LINKET_HOME", "").strip()
+    if val:
+        return val
+    val = os.environ.get("HERMES_HOME", "").strip()
+    if val:
+        return val
+    return ""
+
+
+def _default_home_dir() -> Path:
+    """Resolve the default home directory for an install with no env override.
+
+    Prefers ``~/.linket`` if it exists.  Falls back to ``~/.hermes`` on
+    legacy installs that haven't run migration yet (this avoids stranding
+    state on first launch after upgrade).  Returns ``~/.linket`` for fresh
+    installs where neither directory exists.
+    """
+    new = Path.home() / _NEW_HOME_NAME
+    if new.exists():
+        return new
+    legacy = Path.home() / _LEGACY_HOME_NAME
+    if legacy.exists():
+        return legacy
+    return new
+
 
 def get_hermes_home() -> Path:
-    """Return the Hermes home directory (default: ~/.hermes).
+    """Return the agent's home directory (default: ~/.linket; ~/.hermes legacy).
 
-    Reads HERMES_HOME env var, falls back to ~/.hermes.
-    This is the single source of truth — all other copies should import this.
+    Reads ``LINKET_HOME`` then ``HERMES_HOME``, falling back to whichever
+    of ``~/.linket`` or ``~/.hermes`` already exists on disk.  This is the
+    single source of truth — all other copies should import this.
 
-    When ``HERMES_HOME`` is unset but an ``active_profile`` file indicates
-    a non-default profile is active, logs a loud one-shot warning to
-    ``errors.log`` so cross-profile data corruption is diagnosable instead
-    of silent.  Behavior is unchanged otherwise — we still return
-    ``~/.hermes`` — because raising here would brick 30+ module-level
-    callers that import this at load time.  Subprocess spawners are
-    expected to propagate ``HERMES_HOME`` explicitly (see the systemd
-    template in ``hermes_cli/gateway.py`` and the kanban dispatcher in
-    ``hermes_cli/kanban_db.py``).  See https://github.com/NousResearch/hermes-agent/issues/18594.
+    When neither env var is set but an ``active_profile`` file indicates a
+    non-default profile is active, logs a loud one-shot warning so
+    cross-profile data corruption is diagnosable instead of silent.
+    Behaviour is otherwise unchanged: raising here would brick 30+
+    module-level callers that import this at load time.  Subprocess
+    spawners are expected to propagate ``LINKET_HOME`` (or ``HERMES_HOME``)
+    explicitly — see the systemd template in ``hermes_cli/gateway.py`` and
+    the kanban dispatcher in ``hermes_cli/kanban_db.py``.
     """
-    val = os.environ.get("HERMES_HOME", "").strip()
+    val = _resolve_home_env()
     if val:
         return Path(val)
 
@@ -35,12 +75,15 @@ def get_hermes_home() -> Path:
     # the fallback to the default profile is almost certainly wrong.
     global _profile_fallback_warned
     if not _profile_fallback_warned:
+        active = ""
         try:
-            # Inline the default-root resolution from get_default_hermes_root()
-            # to stay import-safe (this function is called from module scope
-            # in 30+ files; we cannot afford to trigger logging setup here).
-            active_path = (Path.home() / ".hermes" / "active_profile")
-            active = active_path.read_text().strip() if active_path.exists() else ""
+            # Look in whichever home dir actually exists; keeps the warning
+            # accurate during the ~/.hermes → ~/.linket migration window.
+            for candidate in (_NEW_HOME_NAME, _LEGACY_HOME_NAME):
+                active_path = Path.home() / candidate / "active_profile"
+                if active_path.exists():
+                    active = active_path.read_text().strip()
+                    break
         except (UnicodeDecodeError, OSError):
             active = ""
         if active and active != "default":
@@ -52,12 +95,11 @@ def get_hermes_home() -> Path:
             # on consoles where a StreamHandler is already attached.
             import sys
             msg = (
-                f"[HERMES_HOME fallback] HERMES_HOME is unset but active "
-                f"profile is {active!r}. Falling back to ~/.hermes, which "
-                f"is the DEFAULT profile — not {active!r}. Any data this "
+                f"[LINKET_HOME fallback] LINKET_HOME/HERMES_HOME is unset "
+                f"but active profile is {active!r}. Falling back to the "
+                f"default profile root — NOT {active!r}. Any data this "
                 f"process writes will land in the wrong profile. The "
-                f"subprocess spawner should pass HERMES_HOME explicitly "
-                f"(see issue #18594)."
+                f"subprocess spawner should pass LINKET_HOME explicitly."
             )
             try:
                 sys.stderr.write(msg + "\n")
@@ -65,33 +107,34 @@ def get_hermes_home() -> Path:
             except Exception:
                 pass
 
-    return Path.home() / ".hermes"
+    return _default_home_dir()
 
 
 def get_default_hermes_root() -> Path:
-    """Return the root Hermes directory for profile-level operations.
+    """Return the root agent directory for profile-level operations.
 
-    In standard deployments this is ``~/.hermes``.
+    In standard deployments this is ``~/.linket`` (or ``~/.hermes`` on
+    legacy installs that haven't been migrated yet).
 
-    In Docker or custom deployments where ``HERMES_HOME`` points outside
-    ``~/.hermes`` (e.g. ``/opt/data``), returns ``HERMES_HOME`` directly
-    — that IS the root.
+    In Docker or custom deployments where ``LINKET_HOME``/``HERMES_HOME``
+    points outside the default home (e.g. ``/opt/data``), returns that
+    env value directly — that IS the root.
 
-    In profile mode where ``HERMES_HOME`` is ``<root>/profiles/<name>``,
-    returns ``<root>`` so that ``profile list`` can see all profiles.
-    Works both for standard (``~/.hermes/profiles/coder``) and Docker
+    In profile mode where the env var is ``<root>/profiles/<name>``,
+    returns ``<root>`` so ``profile list`` sees all profiles.  Works for
+    both standard (``~/.linket/profiles/coder``) and Docker
     (``/opt/data/profiles/coder``) layouts.
 
     Import-safe — no dependencies beyond stdlib.
     """
-    native_home = Path.home() / ".hermes"
-    env_home = os.environ.get("HERMES_HOME", "")
+    native_home = _default_home_dir()
+    env_home = _resolve_home_env()
     if not env_home:
         return native_home
     env_path = Path(env_home)
     try:
         env_path.resolve().relative_to(native_home.resolve())
-        # HERMES_HOME is under ~/.hermes (normal or profile mode)
+        # Env var is under the default home (normal or profile mode).
         return native_home
     except ValueError:
         pass
@@ -103,7 +146,7 @@ def get_default_hermes_root() -> Path:
     if env_path.parent.name == "profiles":
         return env_path.parent.parent
 
-    # Not a profile path — HERMES_HOME itself is the root
+    # Not a profile path — the env value itself is the root.
     return env_path
 
 

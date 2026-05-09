@@ -1,8 +1,12 @@
 #!/bin/bash
-# Docker/Podman entrypoint: bootstrap config files into the mounted volume, then run hermes.
+# Docker/Podman entrypoint: bootstrap config files into the mounted volume, then run linket.
 set -e
 
-HERMES_HOME="${HERMES_HOME:-/opt/data}"
+# Accept both LINKET_* (canonical) and HERMES_* (legacy) env spellings.
+# Empty defaults so an unset legacy var doesn't override a set canonical one.
+HERMES_HOME="${LINKET_HOME:-${HERMES_HOME:-/opt/data}}"
+HERMES_UID="${LINKET_UID:-${HERMES_UID:-}}"
+HERMES_GID="${LINKET_GID:-${HERMES_GID:-}}"
 INSTALL_DIR="/opt/hermes"
 
 # --- Privilege dropping via gosu ---

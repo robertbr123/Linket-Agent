@@ -8974,12 +8974,21 @@ def _plugin_cli_discovery_needed() -> bool:
 
 
 def main():
-    """Main entry point for hermes CLI."""
+    """Main entry point for the linket CLI."""
     # Force UTF-8 stdio on Windows before anything prints.  No-op elsewhere.
     try:
         from hermes_cli.stdio import configure_windows_stdio
         configure_windows_stdio()
     except Exception:
+        pass
+
+    # Best-effort one-shot migration ~/.hermes → ~/.linket on first run.
+    # No-op for fresh installs and for users who pinned an explicit home dir.
+    try:
+        from hermes_cli._home_migration import maybe_migrate_legacy_home
+        maybe_migrate_legacy_home()
+    except Exception:
+        # Migration must never block CLI startup.
         pass
 
     from hermes_cli._parser import build_top_level_parser

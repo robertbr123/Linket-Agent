@@ -100,14 +100,21 @@ RUN chmod -R a+rX /opt/hermes && \
 # Start as root so the entrypoint can usermod/groupmod + gosu.
 # If HERMES_UID is unset, the entrypoint drops to the default hermes user (10000).
 
-# ---------- Link hermes-agent itself (editable) ----------
+# ---------- Link linket-agent itself (editable) ----------
 # Deps are already installed in the cached layer above; `--no-deps` makes
 # this a fast (~1s) egg-link creation with no resolution or downloads.
 RUN uv pip install --no-cache-dir --no-deps -e "."
 
 # ---------- Runtime ----------
+# In-container paths still spell ``hermes`` (e.g. /opt/hermes, hermes_cli/) —
+# the user-facing rebrand happens through the entrypoint and host volume
+# mappings.  Renaming the in-container layout is a separate Phase 5/7 task
+# that requires rebuilding the image and updating all chown/COPY/ENTRYPOINT
+# paths together; doing it cleanly is gated on running ``docker build``.
 ENV HERMES_WEB_DIST=/opt/hermes/hermes_cli/web_dist
+ENV LINKET_WEB_DIST=/opt/hermes/hermes_cli/web_dist
 ENV HERMES_HOME=/opt/data
+ENV LINKET_HOME=/opt/data
 ENV PATH="/opt/data/.local/bin:${PATH}"
 VOLUME [ "/opt/data" ]
 ENTRYPOINT [ "/usr/bin/tini", "-g", "--", "/opt/hermes/docker/entrypoint.sh" ]
