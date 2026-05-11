@@ -8,11 +8,13 @@ Core layers:
     - agent_loop: Reusable multi-turn agent loop with standard OpenAI-spec tool calling
     - tool_context: Per-rollout tool access handle for reward/verification functions
     - hermes_base_env: Abstract base environment (BaseEnv subclass) for Atropos
+    - linket_base_env: Canonical alias for the same base environment
     - tool_call_parsers: Client-side tool call parser registry for Phase 2 (VLLM /generate)
 
 Concrete environments:
     - terminal_test_env/: Simple file-creation tasks for testing the stack
     - hermes_swe_env/: SWE-bench style tasks with Modal sandboxes
+    - linket_swe_env/: Canonical alias for the same SWE environment
 
 Benchmarks (eval-only):
     - benchmarks/terminalbench_2/: Terminal-Bench 2.0 evaluation

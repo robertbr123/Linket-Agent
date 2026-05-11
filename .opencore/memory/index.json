@@ -1,0 +1,112 @@
+{
+  "entries": [
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1935cdf9001CoTrvgyDdyS8vV",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "ainda temo algo para concluir veja como esta o prgoresso\nVou checar o estado atual do rebrand e do worktree para te dizer com precisão o que falta concluir.\nSim, ainda `tem coisa para concluir`.\n\n**Como está o progresso**\n- Fases `0, 1, 2, 3, 4, 6, 7, 8, 9` estão marcadas como concluídas em `docs/REBRAND-PLAN.md:20-30`.\n- Fase `5` ainda está `adiada` no plano: `docs/REBRAND-PLAN.md:26`.\n- Fase `10` ainda está `pendente/em aberto`: `docs/REBRAND-PLAN.md:31`.\n\n**O que eu já deixei adiantado**\n- Entrou uma camada segura de alias para o nome novo:\n  - `linket_cli`\n  - `linket_constants`\n  - `linket_state`\n  - `linket_bootstrap`\n  - `linket_logging`\n  - `linket_time`\n  - aliases em `environments/`\n- O launcher `linket` já aponta para `linket_cli.main`.\n- O `pyproject.toml` já passou a expor os aliases novos.\n\n**O que ainda falta de verdade**\n1. Concluir a Fase 5 no sentido estrito do plano.\n   - Hoje nós `não renomeamos de fato` `hermes_cli/` para `linket_cli/`.\n   - Nós `não removemos` os ",
+      "updated": 1778539439519
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1932f038001rVoSySUOtVWgpe",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "e como faco para rodar? me diga. esse linket blz.\nRoda assim, isolado do seu Hermes atual:\n\n```bash\ncd \"/Users/robertalbino/Documents/GitHub/Linket Agent\"\npython3 -m venv .venv-linket\nsource .venv-linket/bin/activate\npip install -e \".[dev]\"\nLINKET_HOME=\"$HOME/.linket-test\" HERMES_HOME=\"$HOME/.linket-test\" ./linket\n```\n\nSe quiser já abrir o setup:\n\n```bash\ncd \"/Users/robertalbino/Documents/GitHub/Linket Agent\"\nsource .venv-linket/bin/activate\nLINKET_HOME=\"$HOME/.linket-test\" HERMES_HOME=\"$HOME/.linket-test\" ./linket setup\n```\n\nSe faltar dependência e você quiser uma instalação mais completa:\n\n```bash\npip install -e \".[all,dev]\"\n```\n\nSe quiser, eu também posso te passar a versão com `alias` pronto para você sempre abrir esse Linket com um comando curto.",
+      "updated": 1778539238171
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e19270c62001HcW5DNhSFr7ZFa",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "eu queria testar mais eu ja tenho o Hermes insolado nesse maquina eu poderia rodar esse que não iria da conflito?\nSim, `dá para testar sem conflito`, mas só se o isolamento for de verdade nestes 2 níveis:\n\n1. `venv` separada\n2. `LINKET_HOME` ou `HERMES_HOME` separado\n\n**Seguro**\n- Hermes antigo em uma venv própria\n- Este checkout em outra venv própria\n- Cada um com diretório de runtime separado, por exemplo:\n  - Hermes: `~/.hermes` ou outro path seu\n  - Linket: `~/.linket-test`\n\n**Arriscado**\n- Instalar este projeto na mesma venv onde o Hermes já está instalado\n- Rodar os dois apontando para o mesmo home/runtime\n\nO principal risco não é o binário `linket`; é que internamente ainda existem módulos legados como `hermes_cli`, `hermes_state`, etc. Então, na mesma venv, um pode sobrescrever/importar partes do outro.\n\n**Recomendação prática**\nUse algo assim para testar este fork isolado:\n\n```bash\npython3 -m venv .venv-linket\nsource .venv-linket/bin/activate\npip install -e \".[dev]\"\nLINKET_HOM",
+      "updated": 1778538470029
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1870b8f0001SpWx8ZE9LaZhf1",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "mais entenda somente se nao for quebrar nada.\nVou seguir pelo caminho mais seguro: rename com compatibilidade controlada e verificação pesada. Se algum passo abrir risco real de quebra, eu paro naquele ponto em vez de forçar o restante.\nVou priorizar um rename seguro por alias compatível: introduzir `linket_*` como nomes canônicos sem remover `hermes_*` agora. Isso reduz muito o risco de quebrar import, plugin string-based e testes legados.\nEncontrei um caminho bom e de baixo risco para a parte Python: expor `linket_*` como nomes canônicos por alias, sem arrancar `hermes_*`. O ponto mais sensível agora é o pacote TUI `hermes-ink`; vou medir se ele também aceita alias limpo antes de tocar nisso.\nVou abrir só os pontos de entrada para alinhar os aliases novos sem apostar em magia de import.\nVou adicionar os aliases canônicos novos agora: `linket_cli`, `linket_state`, `linket_constants`, etc., mais aliases de environments. Isso entrega a transição interna sem quebrar o código que ainda im",
+      "updated": 1778526871937
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e186f73a1001gNH95aypGc1OfU",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "vamos fazer somente esse Concluir Fase 5 do rebrand interno.\nConcluir Fase 10 de verificação final do rebrand.\nVou atacar isso em duas frentes: mapear exatamente os módulos/strings `hermes_*` ainda ativos e então fazer o rename interno com verificação real no fim.\nA superfície é grande: o rename interno toca pacote `hermes_cli`, módulos `hermes_*`, ambientes e o pacote `hermes-ink`. Vou medir só as referências de código reais primeiro, excluindo docs/duplicatas, para evitar mexer no que não precisa.\nVou fazer o rename de forma mecânica e mínima: mover os módulos-alvo, atualizar imports/strings em lote e só depois corrigir resíduos pontuais que quebrarem na verificação.\nVou medir os resíduos reais de `hermes` no código depois da lista inicial, porque a Fase 10 só fecha de verdade se não sobrar referência estrutural importante escondida em símbolos e paths.",
+      "updated": 1778526511431
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e186605df001L5DyuKMwtTi7Iy",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "analise todo esse meu projeto e veja como estamos o que falta ainda para fazemos se possível use outro agente para le ajudar a ser mais rapido.\nVou fazer um diagnóstico rápido do repositório em paralelo: estrutura/áreas principais, sinais de pendências no código e estado atual do worktree.\nPrimeiro sinal importante: o repositório é grande e maduro, mas há artefatos duplicados do macOS/iCloud (`\" 2\"` em nomes) e um diretório `.opencore/` não rastreado no worktree. Agora vou dividir a leitura entre subagentes para acelerar a avaliação de arquitetura, cobertura e lacunas.\nJá tenho um panorama consistente: arquitetura forte, bastante coisa pronta, mas com sinais claros de transição e higiene pendente. Vou validar alguns arquivos-chave do root e do plano de rebrand para transformar isso em um diagnóstico mais preciso do que ainda falta.\nUsei subagentes para acelerar a leitura de backend, frontend e testes/docs. O projeto está em um estágio forte, mas ainda não totalmente consolidado.\n\n**Est",
+      "updated": 1778526305388
+    },
+    {
+      "id": "handoff-ses_1e7976500ffe5BctOqh1mGwcIP-msg_e18689b04001pcBJZrX0lkZaLQ",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "Analise o repositório /Users/robertalbino/Documents/GitHub/Linket Agent com foco em testes, documentação e prontidão de manutenção. Identifique: 1) cobertura estrutural aparente, 2) documentação forte, 3) pendências ou sinais de dívida técnica, 4) o que ainda falta para um projeto bem consolidado. Não edite arquivos. Responda em português com referências de arquivos-chave.\nSegue um diagnóstico objetivo do repositório com foco em testes, documentação e prontidão de manutenção.\n\n## 1) Cobertura estrutural aparente\n\nPontos fortes:\n- A suíte é grande e bem distribuída: encontrei cerca de 1.627 arquivos de teste `test_*.py`, cobrindo principalmente `tools` (~408), `hermes_cli` (~374), `gateway` (~272), `run_agent` (~150) e `agent` (~105).\n- Há preocupação real com reprodutibilidade: o runner oficial fixa ambiente hermético, timezone, locale, hash seed e número de workers em `scripts/run_tests.sh`.\n- O `tests/conftest.py` isola `HERMES_HOME`, limpa credenciais e variáveis comportamentais ant",
+      "updated": 1778526278015
+    },
+    {
+      "id": "handoff-ses_1e797650fffeVgKAB113XJ9UX2-msg_e18689af6001HeGXGi6niqsQmX",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "Analise o repositório /Users/robertalbino/Documents/GitHub/Linket Agent com foco em frontend e UX (web dashboard + ui-tui). Identifique: 1) superfícies de UI existentes, 2) estado aparente de maturidade, 3) inconsistências/lacunas, 4) áreas que parecem em transição ou incompletas. Não edite arquivos. Responda em português com arquivos-chave.\nResumo objetivo com foco em frontend/UX (dashboard web + ui-tui):\n\n## 1) Superfícies de UI existentes\n\n- **Dashboard web React/Vite** com navegação lateral e páginas operacionais:\n  sessões, analytics, modelos, logs, cron, skills, plugins, perfis, config, env e docs.\n  - Arquivo central: `/Users/robertalbino/Documents/GitHub/Linket Agent/web/src/App.tsx`\n  - Páginas: `/Users/robertalbino/Documents/GitHub/Linket Agent/web/src/pages/ChatPage.tsx`, `/Users/robertalbino/Documents/GitHub/Linket Agent/web/src/pages/SessionsPage.tsx`, `/Users/robertalbino/Documents/GitHub/Linket Agent/web/src/pages/ModelsPage.tsx`, `/Users/robertalbino/Documents/GitHub/Li",
+      "updated": 1778526149966
+    },
+    {
+      "id": "handoff-ses_1e7976923ffeaIlRdFb6fFDsj8-msg_e186896e2001eOIWR2EjJpGsTh",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "Analise o repositório /Users/robertalbino/Documents/GitHub/Linket Agent com foco na arquitetura Python/backend. Identifique: 1) componentes principais e como se conectam, 2) sinais de maturidade, 3) riscos/lacunas aparentes, 4) áreas que provavelmente ainda faltam consolidar. Não edite arquivos. Retorne um resumo objetivo em português com referências de arquivos-chave.\nSegue um diagnóstico objetivo do backend Python do repositório.\n\n## 1) Componentes principais e como se conectam\n\n### Núcleo do agente\n- O centro do backend é a classe `AIAgent`, responsável pelo loop de conversa, chamadas ao modelo, tool-calling, memória, compressão de contexto e persistência de sessão.  \n  Arquivo-chave: `/Users/robertalbino/Documents/GitHub/Linket Agent/run_agent.py`\n\n### Orquestração de ferramentas\n- `run_agent.py` delega a resolução/exposição/execução de tools para `model_tools.py`.\n- `model_tools.py` usa um registry central em `tools/registry.py`; as tools se auto-registram via import.\n- `toolsets.",
+      "updated": 1778526102862
+    }
+  ]
+}

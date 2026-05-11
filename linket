@@ -10,5 +10,5 @@ pyproject.toml).
 """
 
 if __name__ == "__main__":
-    from hermes_cli.main import main
+    from linket_cli.main import main
     main()
