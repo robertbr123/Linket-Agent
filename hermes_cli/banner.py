@@ -127,7 +127,7 @@ _UPDATE_CHECK_CACHE_SECONDS = 6 * 3600
 # (e.g. nix-built hermes — no local git history to count against).
 UPDATE_AVAILABLE_NO_COUNT = -1
 
-_UPSTREAM_REPO_URL = "https://github.com/NousResearch/hermes-agent.git"
+_UPSTREAM_REPO_URL = "https://github.com/robertbr123/Linket-Agent.git"
 
 
 def _check_via_rev(local_rev: str) -> Optional[int]:
@@ -176,7 +176,7 @@ def _check_via_local_git(repo_dir: Path) -> Optional[int]:
 
 
 def check_for_updates() -> Optional[int]:
-    """Check whether a Hermes update is available.
+    """Check whether a Linket update is available.
 
     Two paths: if ``HERMES_REVISION`` is set (nix builds embed it), compare
     it to upstream main via ``git ls-remote``. Otherwise look for a local
@@ -276,7 +276,7 @@ def get_git_banner_state(repo_dir: Optional[Path] = None) -> Optional[dict]:
     return {"upstream": upstream, "local": local, "ahead": max(ahead, 0)}
 
 
-_RELEASE_URL_BASE = "https://github.com/NousResearch/hermes-agent/releases/tag"
+_RELEASE_URL_BASE = "https://github.com/robertbr123/Linket-Agent/releases/tag"
 _latest_release_cache: Optional[tuple] = None  # (tag, url) once resolved
 
 

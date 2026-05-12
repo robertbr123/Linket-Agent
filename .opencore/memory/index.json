@@ -1,6 +1,30 @@
 {
   "entries": [
     {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a3921fb001DGscJJaKfNcCml",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "vamos corrigir o update ok\nVou corrigir o fluxo de `update` para o fork de forma mínima e segura: primeiro mapear os pontos que ainda assumem `hermes`/upstream, depois ajustar URL, mensagens e comando recomendado, e por fim verificar os resíduos principais.\nJá tenho os pontos críticos: o risco real está em `hermes_cli/main.py` e `hermes_cli/config.py`. Vou ajustar o comportamento do update para recomendar `linket update`, usar URLs do fork nos fallbacks e manter a lógica de sync com upstream só onde ela é intencional.\nEncontrei o ponto mais perigoso: hoje o repo oficial do `update` ainda é tratado como `NousResearch/hermes-agent`, o que pode fazer um checkout do `Linket` parecer “fork” e puxar lógica de sync indevida. Vou ler só esse trecho final antes do patch para corrigir sem quebrar a intenção de upstream opcional.\nVou checar só um detalhe antes do patch: se existe alguma evidência no repo sobre nome do pacote/fórmula gerenciada (`linket-agent` vs `hermes-agent`) para eu não trocar",
+      "updated": 1778556601856
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a3798bc0016pQLW8g9IbJemc",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "se eu usar linket update vai atualizar ?\nVou confirmar no código como `linket update` está implementado e em quais cenários ele realmente atualiza.\nAgora vou ler a implementação do `update` e a lógica do comando recomendado para te responder com precisão, sem assumir.\nSim, `provavelmente sim`, mas com um detalhe importante.\n\nHoje o `linket` aponta para `linket_cli.main`, que é alias do fluxo antigo, e o comando `update` continua implementado nesse core:\n- `hermes_cli/main.py:7047` define `cmd_update(...)`\n- `pyproject.toml`/launcher já foram movidos para `linket`\n\nNa prática:\n- se sua instalação é um checkout git normal do fork, `linket update` deve executar o mesmo fluxo de update e atualizar\n- ele faz `git fetch origin` + atualização do checkout atual\n- se não houver update, ele responde `Already up to date`\n\nMas há riscos atuais no código:\n- o comando ainda está branded como `Hermes` internamente\n- em alguns fallbacks ele ainda aponta para upstream `NousResearch/hermes-agent`\n- no f",
+      "updated": 1778556337948
+    },
+    {
       "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a35ffd0001Vhz7wqSsYS70Kq",
       "type": "handoff",
       "title": "Latest session handoff",
@@ -9,8 +33,8 @@
         "session"
       ],
       "files": [],
-      "summary": "I’m doing a focused pass on the remaining public-facing rebrand surface, then I’ll update the rebrand plan to match the actual state and verify there aren’t obvious user-visible `Hermes` strings left in the main setup/CLI flow.\nI found the remaining user-visible `Hermes` surface is broader than the first Windows-flow pass: the setup/CLI code still has several public strings and defaults, while many other hits are internal docs/comments or intentional upstream attribution. I’m updating the plan doc to reflect the real state, not the earlier optimistic snapshot.\nI’ve isolated concrete public-branding fallbacks in `cli.py` and `hermes_cli/setup.py`. I’m patching those plus the status doc now, while leaving internal compatibility names and upstream attribution alone.",
-      "updated": 1778556236084
+      "summary": "I’m doing a focused pass on the remaining public-facing rebrand surface, then I’ll update the rebrand plan to match the actual state and verify there aren’t obvious user-visible `Hermes` strings left in the main setup/CLI flow.\nI found the remaining user-visible `Hermes` surface is broader than the first Windows-flow pass: the setup/CLI code still has several public strings and defaults, while many other hits are internal docs/comments or intentional upstream attribution. I’m updating the plan doc to reflect the real state, not the earlier optimistic snapshot.\nI’ve isolated concrete public-branding fallbacks in `cli.py` and `hermes_cli/setup.py`. I’m patching those plus the status doc now, while leaving internal compatibility names and upstream attribution alone.\nThe first cleanup patch is in: public fallbacks in `cli.py`, top-level setup wizard copy, and the plan doc now match the actual situation instead of claiming the public pass was effectively complete. I’m doing one more verific",
+      "updated": 1778556278002
     },
     {
       "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a357b6e001kvLoxo44yuu9Lm",

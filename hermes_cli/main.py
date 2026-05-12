@@ -5841,7 +5841,7 @@ _warn_stale_dashboard_processes = _kill_stale_dashboard_processes
 
 
 def _update_via_zip(args):
-    """Update Hermes Agent by downloading a ZIP archive.
+    """Update Linket Agent by downloading a ZIP archive.
 
     Used on Windows when git file I/O is broken (antivirus, NTFS filter
     drivers causing 'Invalid argument' errors on file creation).
@@ -5852,13 +5852,13 @@ def _update_via_zip(args):
 
     branch = "main"
     zip_url = (
-        f"https://github.com/NousResearch/hermes-agent/archive/refs/heads/{branch}.zip"
+        f"https://github.com/robertbr123/Linket-Agent/archive/refs/heads/{branch}.zip"
     )
 
     print("→ Downloading latest version...")
     try:
-        tmp_dir = tempfile.mkdtemp(prefix="hermes-update-")
-        zip_path = os.path.join(tmp_dir, f"hermes-agent-{branch}.zip")
+        tmp_dir = tempfile.mkdtemp(prefix="linket-update-")
+        zip_path = os.path.join(tmp_dir, f"linket-agent-{branch}.zip")
         urlretrieve(zip_url, zip_path)
 
         print("→ Extracting...")
@@ -5876,8 +5876,8 @@ def _update_via_zip(args):
                     )
             zf.extractall(tmp_dir)
 
-        # GitHub ZIPs extract to hermes-agent-<branch>/
-        extracted = os.path.join(tmp_dir, f"hermes-agent-{branch}")
+        # GitHub ZIPs extract to Linket-Agent-<branch>/
+        extracted = os.path.join(tmp_dir, f"Linket-Agent-{branch}")
         if not os.path.isdir(extracted):
             # Try to find it
             for d in os.listdir(tmp_dir):
@@ -6166,21 +6166,21 @@ def _restore_stashed_changes(
             _print_stash_cleanup_guidance(stash_ref, stash_selector)
 
     print("⚠ Local changes were restored on top of the updated codebase.")
-    print("  Review `git diff` / `git status` if Hermes behaves unexpectedly.")
+    print("  Review `git diff` / `git status` if Linket behaves unexpectedly.")
     return True
 
 
 # =========================================================================
-# Fork detection and upstream management for `hermes update`
+# Fork detection and upstream management for `linket update`
 # =========================================================================
 
 OFFICIAL_REPO_URLS = {
-    "https://github.com/NousResearch/hermes-agent.git",
-    "git@github.com:NousResearch/hermes-agent.git",
-    "https://github.com/NousResearch/hermes-agent",
-    "git@github.com:NousResearch/hermes-agent",
+    "https://github.com/robertbr123/Linket-Agent.git",
+    "git@github.com:robertbr123/Linket-Agent.git",
+    "https://github.com/robertbr123/Linket-Agent",
+    "git@github.com:robertbr123/Linket-Agent",
 }
-OFFICIAL_REPO_URL = "https://github.com/NousResearch/hermes-agent.git"
+OFFICIAL_REPO_URL = "https://github.com/robertbr123/Linket-Agent.git"
 SKIP_UPSTREAM_PROMPT_FILE = ".skip_upstream_prompt"
 
 
@@ -6313,12 +6313,12 @@ def _sync_with_upstream_if_needed(git_cmd: list[str], cwd: Path) -> None:
 
         # Ask user if they want to add upstream
         print()
-        print("ℹ Your fork is not tracking the official Hermes repository.")
-        print("  This means you may miss updates from NousResearch/hermes-agent.")
+        print("ℹ Your fork is not tracking the official Linket repository.")
+        print("  This means you may miss updates from robertbr123/Linket-Agent.")
         print()
         try:
             response = (
-                input("Add official repo as 'upstream' remote? [Y/n]: ").strip().lower()
+                input("Add official Linket repo as 'upstream' remote? [Y/n]: ").strip().lower()
             )
         except (EOFError, KeyboardInterrupt):
             print()
@@ -6328,7 +6328,7 @@ def _sync_with_upstream_if_needed(git_cmd: list[str], cwd: Path) -> None:
             print("→ Adding upstream remote...")
             if _add_upstream_remote(git_cmd, cwd):
                 print(
-                    "  ✓ Added upstream: https://github.com/NousResearch/hermes-agent.git"
+                    f"  ✓ Added upstream: {OFFICIAL_REPO_URL}"
                 )
                 has_upstream = True
             else:
@@ -6336,7 +6336,7 @@ def _sync_with_upstream_if_needed(git_cmd: list[str], cwd: Path) -> None:
                 return
         else:
             print(
-                "  Skipped. Run 'git remote add upstream https://github.com/NousResearch/hermes-agent.git' to add later."
+                f"  Skipped. Run 'git remote add upstream {OFFICIAL_REPO_URL}' to add later."
             )
             _mark_skip_upstream_prompt()
             return
@@ -7045,7 +7045,7 @@ def _run_pre_update_backup(args) -> None:
 
 
 def cmd_update(args):
-    """Update Hermes Agent to the latest version.
+    """Update Linket Agent to the latest version.
 
     Thin wrapper around ``_cmd_update_impl``: installs hangup protection,
     runs the update, then restores stdio on the way out (even on
@@ -7054,7 +7054,7 @@ def cmd_update(args):
     from hermes_cli.config import is_managed, managed_error
 
     if is_managed():
-        managed_error("update Hermes Agent")
+        managed_error("update Linket Agent")
         return
 
     if getattr(args, "check", False):
@@ -7084,7 +7084,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
     )
     assume_yes = bool(getattr(args, "yes", False))
 
-    print("⚕ Updating Hermes Agent...")
+    print("⛓ Updating Linket Agent...")
     print()
 
     # Pre-update backup — runs before any git/file mutation so users can
@@ -7102,7 +7102,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
         else:
             print("✗ Not a git repository. Please reinstall:")
             print(
-                "  curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash"
+                "  curl -fsSL https://linket.com.br/install.sh | bash"
             )
             sys.exit(1)
 
@@ -7516,10 +7516,10 @@ def _cmd_update_impl(args, gateway_mode: bool):
                     print()
                     print("✓ Configuration updated!")
                 if (gateway_mode or assume_yes or response == "auto") and missing_env:
-                    print("  ℹ API keys require manual entry: hermes config migrate")
+                    print("  ℹ API keys require manual entry: linket config migrate")
             else:
                 print()
-                print("Skipped. Run 'hermes config migrate' later to configure.")
+                print("Skipped. Run 'linket config migrate' later to configure.")
         else:
             print("  ✓ Configuration is up to date")
 
@@ -10958,7 +10958,7 @@ Examples:
     # =========================================================================
     update_parser = subparsers.add_parser(
         "update",
-        help="Update Hermes Agent to the latest version",
+        help="Update Linket Agent to the latest version",
         description="Pull the latest changes from git and reinstall dependencies",
     )
     update_parser.add_argument(
@@ -10990,7 +10990,7 @@ Examples:
         "-y",
         action="store_true",
         default=False,
-        help="Assume yes for interactive prompts (config migration, stash restore). API-key entry is skipped; run 'hermes config migrate' separately for those.",
+        help="Assume yes for interactive prompts (config migration, stash restore). API-key entry is skipped; run 'linket config migrate' separately for those.",
     )
     update_parser.set_defaults(func=cmd_update)
 

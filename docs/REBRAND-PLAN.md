@@ -28,7 +28,7 @@ Atualize este arquivo a cada fase concluída. Branch principal do trabalho:
 | 7 | ✅ | `<este>` | Skills, plugins, packaging, website/docs — `git mv` de 10+ paths + 127 cross-refs |
 | 8 | ✅ | `<este>` | 580 .md/.mdx files rebranded (mass + manual READMEs); RELEASE_v*.md prefixados com nota histórica |
 | 9 | ✅ | `<este>` | `NOTICE.md` com atribuição upstream completa |
-| 10 | ⏳ | — | Verificação final (grep residual, imports, smoke test) |
+| 10 | ⏳ em andamento | — | Verificação final focada em superfícies públicas; ainda há resíduos `Hermes` visíveis fora do fluxo Windows inicial |
 
 ## Tarefas externas (você, fora do código)
 
@@ -44,7 +44,9 @@ Estas dependências **bloqueiam o lançamento público** mas não bloqueiam cont
 
 ## Fase 5 — Rename do módulo Python (detalhamento)
 
-**Por que está adiada:** sem rodar `pytest` nessa máquina é voar cego em ~600 arquivos. A Fase 4 já entrega tudo que o usuário final vê (`linket` no CLI). O rename do módulo é higiene de codebase, não funcionalidade.
+**Estado real atual:** a estratégia implementada até aqui foi de aliases compatíveis (`linket_*`, `linket_cli`) em vez de rename interno total. Isso cobre packaging/entrypoints canônicos com risco bem menor. O rename físico amplo continua adiado.
+
+**Por que continua adiada:** sem rodar a matriz de testes nessa máquina é voar cego em ~600 arquivos. A camada de aliases já entrega o nome canônico `linket` para o usuário final sem exigir rename destrutivo. O rename do módulo segue sendo higiene de codebase, não funcionalidade.
 
 ### Superfície real (medida em `b943f1b`)
 
@@ -182,6 +184,13 @@ Criar `NOTICE.md` na raiz documentando:
 
 ## Fase 10 — Verificação final
 
+**Status atual desta fase:** parcialmente executada. A primeira checagem corrigiu o fluxo principal do log do Windows, mas uma varredura posterior mostrou que ainda existem strings públicas `Hermes` em trechos de CLI/setup/dashboard/site. Nem todo resíduo é bug público: parte é comentário interno, compatibilidade, conteúdo histórico ou atribuição upstream.
+
+**Conclusão operacional até aqui:**
+- A estratégia de aliases compatíveis está funcionando e deve continuar.
+- O fluxo principal `linket`/setup/banner foi melhorado, mas a limpeza pública ainda não está concluída.
+- Não tratar `grep Hermes` como meta de zero absoluto; o objetivo é zerar superfícies públicas indevidas, preservando atribuição e compatibilidade onde necessário.
+
 ```bash
 # Resíduos aceitáveis: NOTICE.md, RELEASE_v0.*.md (history), comentários explicando origem
 grep -rin "hermes\|nousresearch" --include="*.py" --include="*.toml" --include="*.json" --include="*.yaml" --include="*.yml" --include="*.sh" --include="*.ps1" --include="*.md" --include="*.nix" \
@@ -202,4 +211,4 @@ mktemp -d /tmp/linket-test-XXXX
 
 ---
 
-_Última atualização: 2026-05-09 — Fases 0–4, 6, 7, 8, 9 concluídas. Fase 5 adiada (depende de pytest); Fase 10 pendente._
+_Última atualização: 2026-05-12 — Fases 0–4, 6, 7, 8, 9 concluídas. Fase 5 segue adiada (rename físico amplo ainda é arriscado; aliases compatíveis já existem). Fase 10 em andamento, com resíduos públicos ainda sendo varridos._

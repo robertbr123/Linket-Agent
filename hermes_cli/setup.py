@@ -1,5 +1,5 @@
 """
-Interactive setup wizard for Hermes Agent.
+Interactive setup wizard for Linket Agent.
 
 Modular wizard with independently-runnable sections:
   1. Model & Provider — choose your AI provider and model
@@ -8,7 +8,7 @@ Modular wizard with independently-runnable sections:
   4. Messaging Platforms — connect Telegram, Discord, etc.
   5. Tools — configure TTS, web search, image generation, etc.
 
-Config files are stored in ~/.hermes/ for easy access.
+Config files are stored in ~/.linket/ for easy access.
 """
 
 import importlib.util
@@ -377,7 +377,7 @@ def _print_setup_summary(config: dict, hermes_home):
     if _vision_backends:
         tool_status.append(("Vision (image analysis)", True, None))
     else:
-        tool_status.append(("Vision (image analysis)", False, "run 'hermes setup' to configure"))
+        tool_status.append(("Vision (image analysis)", False, "run 'linket setup' to configure"))
 
     # Mixture of Agents — requires OpenRouter specifically (calls multiple models)
     if get_env_value("OPENROUTER_API_KEY"):
@@ -778,10 +778,10 @@ def _read_nearest_vercel_project(start: Path | None = None) -> dict[str, str]:
 def setup_model_provider(config: dict, *, quick: bool = False):
     """Configure the inference provider and default model.
 
-    Delegates to ``cmd_model()`` (the same flow used by ``hermes model``)
+    Delegates to ``cmd_model()`` (the same flow used by ``linket model``)
     for provider selection, credential prompting, and model picking.
     This ensures a single code path for all provider setup — any new
-    provider added to ``hermes model`` is automatically available here.
+    provider added to ``linket model`` is automatically available here.
 
     When *quick* is True, skips credential rotation, vision, and TTS
     configuration — used by the streamlined first-time quick setup.
@@ -793,7 +793,7 @@ def setup_model_provider(config: dict, *, quick: bool = False):
     print_info(f"   Guide: {_DOCS_BASE}/integrations/providers")
     print()
 
-    # Delegate to the shared hermes model flow — handles provider picker,
+    # Delegate to the shared Linket model flow — handles provider picker,
     # credential prompting, model selection, and config persistence.
     from hermes_cli.main import select_provider_and_model
     try:
@@ -804,7 +804,7 @@ def setup_model_provider(config: dict, *, quick: bool = False):
     except Exception as exc:
         logger.debug("select_provider_and_model error during setup: %s", exc)
         print_warning(f"Provider setup encountered an error: {exc}")
-        print_info("You can try again later with: hermes model")
+        print_info("You can try again later with: linket model")
 
     # Re-sync the wizard's config dict from what cmd_model saved to disk.
     # This is critical: cmd_model writes to disk via its own load/save cycle,
@@ -2014,7 +2014,7 @@ def _setup_slack():
             # new commands (e.g. /btw, /stop, ...) get registered in Slack.
             if prompt_yes_no(
                 "Regenerate the Slack app manifest with the latest command "
-                "list? (recommended after `hermes update`)",
+                "list? (recommended after `linket update`)",
                 True,
             ):
                 _write_slack_manifest_and_instruct()

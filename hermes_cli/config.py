@@ -151,7 +151,7 @@ def get_managed_update_command() -> Optional[str]:
     """Return the preferred upgrade command for a managed install."""
     managed_system = get_managed_system()
     if managed_system == "Homebrew":
-        return "brew upgrade hermes-agent"
+        return "brew upgrade linket-agent"
     if managed_system == "NixOS":
         return "sudo nixos-rebuild switch"
     return None
@@ -159,7 +159,7 @@ def get_managed_update_command() -> Optional[str]:
 
 def recommended_update_command() -> str:
     """Return the best update command for the current installation."""
-    return get_managed_update_command() or "hermes update"
+    return get_managed_update_command() or "linket update"
 
 
 def format_managed_message(action: str = "modify this Hermes installation") -> str:
@@ -182,7 +182,7 @@ def format_managed_message(action: str = "modify this Hermes installation") -> s
             f"Cannot {action}: this Hermes installation is managed by Homebrew "
             f"(HERMES_MANAGED={env_hint}).\n"
             "Use:\n"
-            "  brew upgrade hermes-agent"
+            "  brew upgrade linket-agent"
         )
 
     return (
