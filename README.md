@@ -155,24 +155,28 @@ See `linket claw migrate --help` for all options, or use the `openclaw-migration
 
 We welcome contributions! See the [Contributing Guide](https://linket.com.br/docs/developer-guide/contributing) for development setup, code style, and PR process.
 
-Quick start for contributors — clone and go with `setup-hermes.sh`:
+Quick start for contributors:
 
 ```bash
 git clone https://github.com/robertbr123/Linket-Agent.git
 cd linket-agent
-./setup-hermes.sh     # installs uv, creates venv, installs .[all], symlinks ~/.local/bin/hermes
-./linket              # auto-detects the venv, no need to `source` first
-```
-
-Manual path (equivalent to the above):
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
 uv venv .venv --python 3.11
 source .venv/bin/activate
 uv pip install -e ".[all,dev]"
+./linket
+```
+
+Canonical test command:
+
+```bash
 scripts/run_tests.sh
 ```
+
+Naming note for contributors:
+
+- Public and user-facing naming is `Linket Agent`, `linket`, and `~/.linket`.
+- Some internal Python modules still keep legacy `hermes_*` names for compatibility.
+- New aliases like `linket_cli` and `linket_constants` are preferred for new entry points when available.
 
 > **RL Training (optional):** The RL/Atropos integration (`environments/`) — see [`CONTRIBUTING.md`](https://github.com/robertbr123/Linket-Agent/blob/main/CONTRIBUTING.md#development-setup) for the full setup.
 

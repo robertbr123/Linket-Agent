@@ -41,7 +41,8 @@ This page is the top-level map of Linket Agent internals. Use it to orient yours
 ┌───────────────────┐              ┌──────────────────────┐
 │ Session Storage   │              │ Tool Backends         │
 │ (SQLite + FTS5)   │              │ Terminal (7 backends) │
-│ hermes_state.py   │              │ Browser (5 backends)  │
+│ hermes_state.py / │              │ Browser (5 backends)  │
+│ linket_state.py   │              │                       │
 │ gateway/session.py│              │ Web (4 backends)      │
 └───────────────────┘              │ MCP (dynamic)         │
                                    │ File, Vision, etc.    │
@@ -53,11 +54,13 @@ This page is the top-level map of Linket Agent internals. Use it to orient yours
 ```text
 linket-agent/
 ├── run_agent.py              # AIAgent — core conversation loop (~13,700 lines)
-├── cli.py                    # HermesCLI — interactive terminal UI (~11,500 lines)
+├── cli.py                    # Linket CLI — interactive CLI orchestrator
 ├── model_tools.py            # Tool discovery, schema collection, dispatch
 ├── toolsets.py               # Tool groupings and platform presets
-├── hermes_state.py           # SQLite session/state database with FTS5
-├── hermes_constants.py       # HERMES_HOME, profile-aware paths
+├── hermes_state.py           # Legacy module name for the SQLite session/state database
+├── linket_state.py           # Canonical alias for new entry points/imports
+├── hermes_constants.py       # Legacy module name for profile-aware paths
+├── linket_constants.py       # Canonical alias for new entry points/imports
 ├── batch_runner.py           # Batch trajectory generation
 │
 ├── agent/                    # Agent internals
@@ -75,7 +78,8 @@ linket-agent/
 │   ├── memory_provider.py   # Memory provider ABC
 │   └── trajectory.py         # Trajectory saving helpers
 │
-├── hermes_cli/               # CLI subcommands and setup
+├── hermes_cli/               # Legacy package name still used for compatibility
+├── linket_cli/               # Canonical alias package for new entry points/imports
 │   ├── main.py               # Entry point — all `linket` subcommands (~10,400 lines)
 │   ├── config.py             # DEFAULT_CONFIG, OPTIONAL_ENV_VARS, migration
 │   ├── commands.py           # COMMAND_REGISTRY — central slash command definitions
@@ -139,7 +143,7 @@ linket-agent/
 ### CLI Session
 
 ```text
-User input → HermesCLI.process_input()
+User input → Linket CLI process_input()
   → AIAgent.run_conversation()
     → prompt_builder.build_system_prompt()
     → runtime_provider.resolve_runtime_provider()

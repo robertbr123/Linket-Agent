@@ -1,6 +1,114 @@
 {
   "entries": [
     {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a35ffd0001Vhz7wqSsYS70Kq",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "I’m doing a focused pass on the remaining public-facing rebrand surface, then I’ll update the rebrand plan to match the actual state and verify there aren’t obvious user-visible `Hermes` strings left in the main setup/CLI flow.\nI found the remaining user-visible `Hermes` surface is broader than the first Windows-flow pass: the setup/CLI code still has several public strings and defaults, while many other hits are internal docs/comments or intentional upstream attribution. I’m updating the plan doc to reflect the real state, not the earlier optimistic snapshot.\nI’ve isolated concrete public-branding fallbacks in `cli.py` and `hermes_cli/setup.py`. I’m patching those plus the status doc now, while leaving internal compatibility names and upstream attribution alone.",
+      "updated": 1778556236084
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a357b6e001kvLoxo44yuu9Lm",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "## Goal\n- Concluir o rebrand Hermes → Linket sem quebrar nada, padronizar docs de desenvolvimento e deixar o branding público Windows/CLI consistente como `Linket`.\n\n## Constraints & Preferences\n- Não quebrar nada; priorizar mudanças seguras com compatibilidade.\n- Preferir estratégia por aliases/camadas compatíveis em vez de rename destrutivo amplo.\n- Usar validação real/smoke tests quando possível.\n- Padronizar docs para uma única verdade operacional.\n- Corrigir branding público visível (`Linket`) sem mexer desnecessariamente no legado interno.\n\n## Progress\n### Done\n- Diagnosticado o repositório: arquitetura forte, TUI mais madura que dashboard web, bastante testes/docs, mas com higiene/rebrand incompletos.\n- Identificados artefatos duplicados `* 2.*` e `.opencore/` não rastreado no worktree.\n- Mapeadas fases do rebrand em `docs/REBRAND-PLAN.md`: Fase 5 adiada; Fase 10 pendente.\n- Implementada camada segura de aliases canônicos para o rebrand interno:\n  - `linket_constants.py`\n  - `li",
+      "updated": 1778556207153
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a34e896001CrZbTfZaE3ROv4",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "## Goal\n- Concluir o rebrand Hermes → Linket sem quebrar nada, padronizar docs de desenvolvimento e corrigir branding público visível no fluxo Windows/CLI.\n\n## Constraints & Preferences\n- Não quebrar nada; priorizar mudanças seguras com compatibilidade.\n- Preferir estratégia por aliases/camadas compatíveis em vez de rename destrutivo amplo.\n- Usar validação real/smoke tests quando possível.\n- Padronizar docs para uma única verdade operacional.\n- Corrigir branding público visível (`Linket`) sem mexer desnecessariamente no legado interno.\n\n## Progress\n### Done\n- Diagnosticado o repositório: arquitetura forte, TUI mais madura que dashboard web, bastante testes/docs, mas com higiene/rebrand incompletos.\n- Identificados artefatos duplicados `* 2.*` e `.opencore/` não rastreado no worktree.\n- Mapeadas fases do rebrand em `docs/REBRAND-PLAN.md`: Fase 5 adiada; Fase 10 pendente.\n- Implementada camada segura de aliases canônicos para o rebrand interno:\n  - `linket_constants.py`\n  - `linket_stat",
+      "updated": 1778556173248
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a31658e001LFvE1syHbIX8u9",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "PS C:\\Users\\User> irm https://raw.githubusercontent.com/robertbr123/Linket-Agent/refs/heads/main/scripts/install.ps1 | iex\n\n┌─────────────────────────────────────────────────────────┐\n│             ⛓ Linket Agent Installer                    │\n├─────────────────────────────────────────────────────────┤\n│  An open source AI agent by Nous Research.              │\n└─────────────────────────────────────────────────────────┘\n\n→ Checking for uv package manager...\n→ Installing uv (fast Python package manager)...\n✓ uv installed (uv 0.11.13 (4512a3931 2026-05-10 x86_64-pc-windows-msvc))\n→ Checking Python 3.11...\n→ Python 3.11 not found, installing via uv...\n⚠ uv python install error: Downloading cpython-3.11.15-windows-x86_64-none (download) (24.5MiB)\n→ Trying to find any existing Python 3.10+...\n✓ Found fallback: Python 3.12.9\n→ Checking Git...\n✓ Git found (git version 2.53.0.windows.2)\n→ Set HERMES_GIT_BASH_PATH=C:\\Program Files\\Git\\bin\\bash.exe\n→ Checking Node.js (for browser tools)...\n✓ Nod",
+      "updated": 1778556135711
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a285d2e001TMS6e5cfJkQUPW",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "oi\nOi.",
+      "updated": 1778555320105
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e194f26da001iwEZRvT7CRsUc7",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "8. Padronizar docs de desenvolvimento vamos fazer isso.\nVou alinhar a documentação de desenvolvimento a uma única verdade operacional: setup, testes, naming e release. Primeiro vou localizar as divergências reais entre `README`, `CONTRIBUTING`, docs do site e o plano de rebrand.\nJá achei as primeiras divergências fortes: docs de contribuição ainda mandam usar `pytest` direto, misturam `venv`/`setup-hermes.sh` e ainda tratam `hermes_cli` como canônico. Agora vou alinhar os arquivos principais que realmente servem de entrada para desenvolvimento.\nVou editar `README.md`, `CONTRIBUTING.md` e a doc web de contribuição/arquitetura para:\n- padronizar setup,\n- padronizar testes em `scripts/run_tests.sh`,\n- explicar naming canônico vs legado,\n- remover a mensagem ambígua de release/manual antigo.\nO patch bateu em trechos que não casavam exatamente. Vou reabrir só as seções-alvo e aplicar um patch menor e preciso.\nAgora tenho contexto suficiente. Vou ajustar só o que realmente ajuda quem desenvo",
+      "updated": 1778541219210
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e194e30d6001ERVFUj1Fk23NCo",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "mais pelo que voce ja conhece nosso sistema daria pra voce dizer algo que poderia melhorar?\nSim. Pelo que eu já vi do sistema, eu melhoraria principalmente estas áreas:\n\n**1. Fechar a estratégia de naming**\n- Hoje o projeto já funciona como `Linket`, mas internamente ainda carrega muito `hermes_*`.\n- Melhoria: decidir oficialmente se:\n  - `alias compatível` é a solução final,\n  - ou se haverá `rename interno completo`.\n- Isso reduz ambiguidade, dívida e confusão futura.\n\n**2. Higiene do repositório**\n- Os arquivos duplicados tipo `* 2.*` são um risco real.\n- Melhoria: limpar isso de vez e tirar o repo do iCloud.\n- Isso ajuda revisão, busca, testes e evita bugs bobos.\n\n**3. Verificação final automatizada do rebrand**\n- Falta uma checagem simples e repetível.\n- Melhoria: criar um script/checklist que valide:\n  - imports principais,\n  - `./linket --help`,\n  - smoke test básico,\n  - grep de resíduos proibidos.\n- Isso evita regressão silenciosa.\n\n**4. Reduzir os arquivos “gigantes”**\n- `run",
+      "updated": 1778541031083
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e194ba50e001zoe2DNu10Dwrwi",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "mais do jeito que esta funcionado?\nSim, `do jeito que está, a direção atual é funcional`.\n\n**Hoje**\n- o nome público `Linket` já funciona,\n- o launcher `./linket` já aponta para `linket_cli.main`,\n- os aliases novos `linket_*` foram criados sem quebrar os módulos antigos,\n- isso é o caminho `mais seguro`.\n\n**Mas**\n- `funcionando` não é igual a `100% concluído`.\n- O que existe hoje é uma transição segura por `alias`, não um rename interno total.\n\n**Na prática**\n- Se a sua pergunta é:\n  - `dá para usar/testar assim?` -> `sim`\n  - `já dá para considerar encerrado tecnicamente?` -> `quase, mas falta validar`\n  - `precisa obrigatoriamente renomear tudo por dentro agora?` -> `não, só se você quiser fechar o rebrand no modo estrito`\n\n**Minha leitura honesta**\n- `sim, está funcionando como estratégia segura`\n- e, se você quiser, `podemos encerrar com alias como solução oficial`\n- aí o que faltaria seria mais:\n  - teste real\n  - atualização do plano\n  - commit final\n\nSe quiser, eu posso te dize",
+      "updated": 1778540860711
+    },
+    {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1947be49001e6hEI4K0iDMeJh",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "o que falta para terminamos.\nFalta fechar `4 blocos`:\n\n**1. Fechar o rebrand interno de verdade**\n- Decidir entre:\n  1. assumir oficialmente a estratégia por `aliases` como solução final,\n  2. ou fazer o rename completo de `hermes_*` para `linket_*`.\n- Se for rename completo, ainda faltam:\n  - `hermes_cli/` → `linket_cli/`\n  - módulos `hermes_constants`, `hermes_state`, `hermes_bootstrap`, `hermes_logging`, `hermes_time`\n  - aliases/paths de `environments/`\n  - possível rename do `ui-tui/packages/hermes-ink`\n\n**2. Fazer a verificação final real**\n- Criar/usar uma venv limpa\n- Instalar dependências\n- Rodar smoke test real:\n  - imports\n  - `./linket --help`\n  - `./linket setup` ou `doctor`\n- Rodar testes relevantes\n- Fazer grep final dos resíduos `hermes` e separar:\n  - resíduos aceitáveis\n  - resíduos que ainda precisam sair\n\n**3. Limpar e consolidar o worktree**\n- Revisar as mudanças locais novas\n- Decidir se os aliases novos entram como solução oficial\n- Atualizar `docs/REBRAND-PLAN.m",
+      "updated": 1778540608856
+    },
+    {
       "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1935cdf9001CoTrvgyDdyS8vV",
       "type": "handoff",
       "title": "Latest session handoff",
@@ -9,7 +117,7 @@
         "session"
       ],
       "files": [],
-      "summary": "ainda temo algo para concluir veja como esta o prgoresso\nVou checar o estado atual do rebrand e do worktree para te dizer com precisão o que falta concluir.\nSim, ainda `tem coisa para concluir`.\n\n**Como está o progresso**\n- Fases `0, 1, 2, 3, 4, 6, 7, 8, 9` estão marcadas como concluídas em `docs/REBRAND-PLAN.md:20-30`.\n- Fase `5` ainda está `adiada` no plano: `docs/REBRAND-PLAN.md:26`.\n- Fase `10` ainda está `pendente/em aberto`: `docs/REBRAND-PLAN.md:31`.\n\n**O que eu já deixei adiantado**\n- Entrou uma camada segura de alias para o nome novo:\n  - `linket_cli`\n  - `linket_constants`\n  - `linket_state`\n  - `linket_bootstrap`\n  - `linket_logging`\n  - `linket_time`\n  - aliases em `environments/`\n- O launcher `linket` já aponta para `linket_cli.main`.\n- O `pyproject.toml` já passou a expor os aliases novos.\n\n**O que ainda falta de verdade**\n1. Concluir a Fase 5 no sentido estrito do plano.\n   - Hoje nós `não renomeamos de fato` `hermes_cli/` para `linket_cli/`.\n   - Nós `não removemos` os ",
+      "summary": "ainda temo algo para concluir veja como esta o prgoresso\nVou checar o estado atual do rebrand e do worktree para te dizer com precisão o que falta concluir.\nSim, ainda `tem coisa para concluir`.\n\n**Como está o progresso**\n- Fases `0, 1, 2, 3, 4, 6, 7, 8, 9` estão marcadas como concluídas em `docs/REBRAND-PLAN.md:20-30`.\n- Fase `5` ainda está `adiada` no plano: `docs/REBRAND-PLAN.md:26`.\n- Fase `10` ainda está `pendente/em aberto`: `docs/REBRAND-PLAN.md:31`.\n\n**O que eu já deixei adiantado**\n- Entrou uma camada segura de alias para o nome novo:\n  - `linket_cli`\n  - `linket_constants`\n  - `linket_state`\n  - `linket_bootstrap`\n  - `linket_logging`\n  - `linket_time`\n  - aliases em `environments/`\n- O launcher `linket` já aponta para `linket_cli.main`.\n- O `pyproject.toml` já passou a expor os aliases novos.\n\n**O que ainda falta de verdade**\n1. Concluir a Fase 5 no sentido estrito do plano.\n   - Hoje nós `não renomeamos de fato` `hermes_cli/` para `linket_cli/`.\n   - Nós `não removemos` os",
       "updated": 1778539439519
     },
     {

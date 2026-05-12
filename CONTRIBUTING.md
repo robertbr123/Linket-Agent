@@ -106,12 +106,10 @@ linket chat -q "Hello"
 ### Run tests
 
 ```bash
-# Preferred — matches CI (hermetic env, 4 xdist workers); see AGENTS.md
+# Preferred — matches CI (hermetic env, 4 xdist workers); this is the canonical path
 scripts/run_tests.sh
 
-# Alternative (activate the venv first). The wrapper is still recommended
-# for parity with GitHub Actions before you open a PR:
-pytest tests/ -v
+# Direct pytest is fallback-only when the wrapper truly cannot be used.
 ```
 
 ---
@@ -121,10 +119,11 @@ pytest tests/ -v
 ```
 linket-agent/
 ├── run_agent.py              # AIAgent class — core conversation loop, tool dispatch, session persistence
-├── cli.py                    # HermesCLI class — interactive TUI, prompt_toolkit integration
+├── cli.py                    # Linket CLI — interactive CLI orchestrator
 ├── model_tools.py            # Tool orchestration (thin layer over tools/registry.py)
 ├── toolsets.py               # Tool groupings and presets (linket-cli, linket-telegram, etc.)
-├── hermes_state.py           # SQLite session database with FTS5 full-text search, session titles
+├── hermes_state.py           # Legacy module name for the SQLite session database
+├── linket_state.py           # Canonical alias for new entry points/imports
 ├── batch_runner.py           # Parallel batch processing for trajectory generation
 │
 ├── agent/                    # Agent internals (extracted modules)
@@ -135,7 +134,8 @@ linket-agent/
 │   ├── model_metadata.py         # Model context lengths, token estimation
 │   └── trajectory.py             # Trajectory saving helpers
 │
-├── hermes_cli/               # CLI command implementations
+├── hermes_cli/               # Legacy package name still used for compatibility
+├── linket_cli/               # Canonical alias package for new entry points/imports
 │   ├── main.py                   # Entry point, argument parsing, command dispatch
 │   ├── config.py                 # Config management, migration, env var definitions
 │   ├── setup.py                  # Interactive setup wizard
@@ -225,7 +225,7 @@ User message → AIAgent._run_agent_loop()
 
 - **Self-registering tools**: Each tool file calls `registry.register()` at import time. `model_tools.py` triggers discovery by importing all tool modules.
 - **Toolset grouping**: Tools are grouped into toolsets (`web`, `terminal`, `file`, `browser`, etc.) that can be enabled/disabled per platform.
-- **Session persistence**: All conversations are stored in SQLite (`hermes_state.py`) with full-text search and unique session titles. JSON logs go to `~/.hermes/sessions/`.
+- **Session persistence**: All conversations are stored in SQLite (`hermes_state.py` / `linket_state.py`) with full-text search and unique session titles. Runtime data lives under `~/.linket/` by default.
 - **Ephemeral injection**: System prompts and prefill messages are injected at API call time, never persisted to the database or logs.
 - **Provider abstraction**: The agent works with any OpenAI-compatible API. Provider resolution happens at init time (Nous Portal OAuth, OpenRouter API key, or custom endpoint).
 - **Provider routing**: When using OpenRouter, `provider_routing` in config.yaml controls provider selection (sort by throughput/latency/price, allow/ignore specific providers, data retention policies). These are injected as `extra_body.provider` in API requests.
@@ -750,7 +750,7 @@ refactor/description   # Code restructuring
 
 ### Before submitting
 
-1. **Run tests**: `scripts/run_tests.sh` (recommended; same as CI) or `pytest tests/ -v` with the project venv activated
+1. **Run tests**: `scripts/run_tests.sh`
 2. **Test manually**: Run `linket` and exercise the code path you changed
 3. **Check cross-platform impact**: If you touch file I/O, process management, or terminal handling, consider macOS, Linux, and WSL2
 4. **Keep PRs focused**: One logical change per PR. Don't mix a bug fix with a refactor with a new feature.
@@ -781,6 +781,21 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 | `chore` | Build, CI, dependency updates |
 
 Scopes: `cli`, `gateway`, `tools`, `skills`, `agent`, `install`, `whatsapp`, `security`, etc.
+
+## Naming and Compatibility
+
+- Public and user-facing naming is `Linket Agent`, `linket`, and `~/.linket`.
+- Internal legacy Python names like `hermes_cli`, `hermes_state`, and `hermes_constants` still exist for compatibility.
+- For new entry points and new compatibility-safe imports, prefer `linket_*` aliases when they exist.
+- Do not remove legacy `hermes_*` modules casually; treat them as compatibility shims unless a verified repo-wide rename is being done deliberately.
+
+## Release Hygiene
+
+- The release helper lives at `scripts/release.py`.
+- Before release work, make sure the canonical checks pass:
+  - `scripts/run_tests.sh`
+  - relevant frontend builds for surfaces you changed
+  - `./linket --help`
 
 Examples:
 ```

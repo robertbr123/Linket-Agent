@@ -45,12 +45,13 @@ git clone --recurse-submodules https://github.com/robertbr123/Linket-Agent.git
 cd linket-agent
 
 # Create venv with Python 3.11
-uv venv venv --python 3.11
-export VIRTUAL_ENV="$(pwd)/venv"
+uv venv .venv --python 3.11
+source .venv/bin/activate
 
 # Install with all extras (messaging, cron, CLI menus, dev tools)
 uv pip install -e ".[all,dev]"
-uv pip install -e "./tinker-atropos"
+# Optional: RL training submodule
+# uv pip install -e "./tinker-atropos"
 
 # Optional: browser tools
 npm install
@@ -70,10 +71,6 @@ echo 'OPENROUTER_API_KEY=sk-or-v1-your-key' >> ~/.linket/.env
 ### Run
 
 ```bash
-# Symlink for global access
-mkdir -p ~/.local/bin
-ln -sf "$(pwd)/venv/bin/linket" ~/.local/bin/linket
-
 # Verify
 linket doctor
 linket chat -q "Hello"
@@ -82,8 +79,10 @@ linket chat -q "Hello"
 ### Run Tests
 
 ```bash
-pytest tests/ -v
+scripts/run_tests.sh
 ```
+
+Direct `pytest` is fallback-only when the wrapper cannot be used. The wrapper is the canonical path because it matches CI.
 
 ## Code Style
 
@@ -91,7 +90,7 @@ pytest tests/ -v
 - **Comments**: Only when explaining non-obvious intent, trade-offs, or API quirks
 - **Error handling**: Catch specific exceptions. Use `logger.warning()`/`logger.error()` with `exc_info=True` for unexpected errors
 - **Cross-platform**: Never assume Unix (see below)
-- **Profile-safe paths**: Never hardcode `~/.hermes` — use `get_hermes_home()` from `hermes_constants` for code paths and `display_hermes_home()` for user-facing messages. See [AGENTS.md](https://github.com/robertbr123/Linket-Agent/blob/main/AGENTS.md#profiles-multi-instance-support) for full rules.
+- **Profile-safe paths**: Never hardcode `~/.hermes` or `~/.linket` in code. Use `get_hermes_home()` from `hermes_constants` for code paths and `display_hermes_home()` for user-facing messages. Default runtime is `~/.linket`; legacy `hermes_*` symbols remain for compatibility.
 
 ## Cross-Platform Compatibility
 
@@ -186,7 +185,7 @@ refactor/description   # Code restructuring
 
 ### Before Submitting
 
-1. **Run tests**: `pytest tests/ -v`
+1. **Run tests**: `scripts/run_tests.sh`
 2. **Test manually**: Run `linket` and exercise the code path you changed
 3. **Check cross-platform impact**: Consider macOS and different Linux distros
 4. **Keep PRs focused**: One logical change per PR
@@ -217,6 +216,20 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 | `chore` | Build, CI, dependency updates |
 
 Scopes: `cli`, `gateway`, `tools`, `skills`, `agent`, `install`, `whatsapp`, `security`
+
+## Naming and Compatibility
+
+- Public naming is `Linket Agent`, `linket`, and `~/.linket`.
+- Some internal modules still retain legacy `hermes_*` names for compatibility.
+- Prefer `linket_*` aliases for new entry points when they exist, but do not remove legacy modules unless a verified repo-wide rename is being performed.
+
+## Release Hygiene
+
+- Release automation lives in `scripts/release.py`.
+- Before touching release/versioning, make sure the same canonical checks pass:
+  - `scripts/run_tests.sh`
+  - relevant frontend builds for changed surfaces
+  - `./linket --help`
 
 Examples:
 ```
