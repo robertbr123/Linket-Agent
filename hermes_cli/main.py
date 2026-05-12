@@ -7044,6 +7044,51 @@ def _run_pre_update_backup(args) -> None:
     print()
 
 
+_WINDOWS_UPDATE_REEXEC_ENV = "LINKET_WINDOWS_UPDATE_REEXEC"
+
+
+def _maybe_reexec_windows_update(argv: list[str]) -> bool:
+    """Re-exec ``update`` via venv Python so ``linket.exe`` can be replaced.
+
+    On Windows, running ``linket update`` from the console launcher keeps
+    ``venv\Scripts\linket.exe`` locked for the lifetime of the process.
+    The editable reinstall later in the update then fails with ``os error 5``
+    when pip/uv tries to replace that launcher.  Re-spawning via the venv's
+    ``python.exe`` releases the launcher lock before installation begins.
+    """
+    if sys.platform != "win32":
+        return False
+    if os.environ.get(_WINDOWS_UPDATE_REEXEC_ENV) == "1":
+        return False
+
+    argv0 = Path(sys.argv[0]).name.lower()
+    if argv0 not in {"linket.exe", "hermes.exe"}:
+        return False
+
+    python_exe = Path(sys.executable)
+    if python_exe.name.lower() != "python.exe":
+        candidate = python_exe.with_name("python.exe")
+        if candidate.exists():
+            python_exe = candidate
+
+    child_env = dict(os.environ)
+    child_env[_WINDOWS_UPDATE_REEXEC_ENV] = "1"
+
+    print("→ Windows launcher detected; re-running update via venv Python...")
+    try:
+        subprocess.Popen(
+            [str(python_exe), "-m", "hermes_cli.main", *argv],
+            cwd=str(PROJECT_ROOT),
+            env=child_env,
+        )
+    except Exception as exc:
+        print(f"⚠ Failed to restart update helper: {exc}")
+        print("  Continuing in-place; launcher replacement may still fail on Windows.")
+        return False
+
+    return True
+
+
 def cmd_update(args):
     """Update Linket Agent to the latest version.
 
@@ -7059,6 +7104,9 @@ def cmd_update(args):
 
     if getattr(args, "check", False):
         _cmd_update_check()
+        return
+
+    if _maybe_reexec_windows_update(sys.argv[1:]):
         return
 
     gateway_mode = getattr(args, "gateway", False)
