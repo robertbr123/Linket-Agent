@@ -1,6 +1,18 @@
 {
   "entries": [
     {
+      "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a87c645001xit8HYURskHPX3",
+      "type": "handoff",
+      "title": "Latest session handoff",
+      "tags": [
+        "handoff",
+        "session"
+      ],
+      "files": [],
+      "summary": "como eu ja tinha instalado antes desse update eu devo rodar irm https://raw.githubusercontent.com/robertbr123/Linket-Agent/refs/heads/main/scripts/install.ps1 | iex no meu windows denovo para atualizar com esses novos updates?\nNão precisa `obrigatoriamente`.\n\nMelhor ordem:\n\n1. Tente primeiro:\n```powershell\nlinket update\n```\n\n2. Reinstale com:\n```powershell\nirm https://raw.githubusercontent.com/robertbr123/Linket-Agent/refs/heads/main/scripts/install.ps1 | iex\n```\nsó se acontecer um destes casos:\n- `linket update` falhar\n- sua instalação estiver sem `.git`\n- o update cair no fallback antigo do Windows\n- você quiser o caminho mais “limpo” para garantir tudo atualizado\n\nMinha leitura hoje:\n- se sua instalação atual é um checkout git normal, `linket update` deve bastar para puxar esse fix\n- no Windows, se você quiser evitar surpresa com o update antigo que estava aí antes, rodar o `install.ps1` de novo é um caminho seguro também\n\nResumo curto:\n- `normalmente`: use `linket update`\n- `se qui",
+      "updated": 1778561585625
+    },
+    {
       "id": "handoff-ses_1e799fa38ffewE2X30zOrwuWxl-msg_e1a3921fb001DGscJJaKfNcCml",
       "type": "handoff",
       "title": "Latest session handoff",
